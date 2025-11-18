@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crewcare Sjekkliste - The Gathering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .login-card input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .username-display {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-header h2 {
+            color: #667eea;
+            font-size: 20px;
+        }
+
+        .checkbox-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .checkbox-item:hover {
+            background: #e9ecef;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .reset-all-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .tips-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .tips-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .tips-box ul {
+            list-style-position: inside;
+            color: #856404;
+        }
+
+        .tips-box li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .header {
+                text-align: center;
+                justify-content: center;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-small {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-card">
+            <h1>🎮 Crewcare Sjekkliste</h1>
+            <h2 style="color: #666; margin-bottom: 30px;">The Gathering</h2>
+            <input type="text" id="usernameInput" placeholder="Skriv inn navnet ditt" />
+            <button class="btn" onclick="login()">Start</button>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" style="display: none;">
+            <div class="header">
+                <div>
+                    <h1>🎮 Crewcare Sjekkliste</h1>
+                    <div class="username-display">Innlogget som: <strong id="currentUsername"></strong></div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()">Logg ut</button>
+            </div>
+
+            <!-- Hver time -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>⏰ Hver time</h2>
+                    <button class="btn btn-small" onclick="resetSection('hourly')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="hourly-1" onchange="saveState()">
+                    <label for="hourly-1">Gå rundt og tørk av bord som trenger rengjøring og sjekk at alt ser ryddig ut</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="hourly-2" onchange="saveState()">
+                    <label for="hourly-2">Sjekk buffeten og fyll på det som mangler (brød, pålegg, yoghurt, juice)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="hourly-3" onchange="saveState()">
+                    <label for="hourly-3">Rydd bort skitne tallerkener, kopper og bestikk til oppvaskmaskinen</label>
+                </div>
+            </div>
+
+            <!-- Hver 2. time -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>⏰ Hver 2. time</h2>
+                    <button class="btn btn-small" onclick="resetSection('twohourly')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="twohourly-1" onchange="saveState()">
+                    <label for="twohourly-1">Sjekk kaffemaskinen, lag ny kaffe hvis den er lav</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="twohourly-2" onchange="saveState()">
+                    <label for="twohourly-2">Sjekk brød, skjær opp og fyll på ved behov</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="twohourly-3" onchange="saveState()">
+                    <label for="twohourly-3">Fyll på kopper, glass og bestikk ved buffeten</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="twohourly-4" onchange="saveState()">
+                    <label for="twohourly-4">Tøm søppelbøtter som er over halvfulle</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="twohourly-5" onchange="saveState()">
+                    <label for="twohourly-5">Sjekk at det er nok servietter og kjøkkenruller tilgjengelig</label>
+                </div>
+            </div>
+
+            <!-- Hver 4. time -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>⏰ Hver 4. time</h2>
+                    <button class="btn btn-small" onclick="resetSection('fourhourly')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="fourhourly-1" onchange="saveState()">
+                    <label for="fourhourly-1">Rengjør arbeidsflater i cafeteria</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="fourhourly-2" onchange="saveState()">
+                    <label for="fourhourly-2">Feie gulvet foran og bak buffeten</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="fourhourly-3" onchange="saveState()">
+                    <label for="fourhourly-3">Sjekk buffet og lag klar nye brett til ting som begynner å bli tomme</label>
+                </div>
+            </div>
+
+            <!-- Ved skiftstart -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🚀 Ved skiftstart</h2>
+                    <button class="btn btn-small" onclick="resetSection('shiftstart')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shiftstart-1" onchange="saveState()">
+                    <label for="shiftstart-1">Sjekk at alt utstyr fungerer (kaffemaskin, oppvaskmaskin, kjølebuffet, juicemaskin)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shiftstart-2" onchange="saveState()">
+                    <label for="shiftstart-2">Sørg for at det er nok rent bestikk og service</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shiftstart-3" onchange="saveState()">
+                    <label for="shiftstart-3">Notér eventuelle mangler eller problemer, rapporter til skiftleder eller chiefs om nødvendig</label>
+                </div>
+            </div>
+
+            <!-- Ved skiftslutt -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🏁 Ved skiftslutt</h2>
+                    <button class="btn btn-small" onclick="resetSection('shiftend')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shiftend-1" onchange="saveState()">
+                    <label for="shiftend-1">Sørg for at buffeten er fylt opp for neste skift</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shiftend-2" onchange="saveState()">
+                    <label for="shiftend-2">Tøm all søppel</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shiftend-3" onchange="saveState()">
+                    <label for="shiftend-3">Gi beskjed til neste vakt om spesielle hendelser eller ting å følge med på</label>
+                </div>
+            </div>
+
+            <!-- Ved servering -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🍽️ Ved servering av varme måltider</h2>
+                    <button class="btn btn-small" onclick="resetSection('mealservice')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mealservice-1" onchange="saveState()">
+                    <label for="mealservice-1">Forbered (rydd og vask) serveringsområdet 30 minutter før servering</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mealservice-2" onchange="saveState()">
+                    <label for="mealservice-2">Sett frem tallerken, bestikk og glass</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mealservice-3" onchange="saveState()">
+                    <label for="mealservice-3">Rydd "front of house" grundig etter måltidet er ferdig, vask over serveringsområde</label>
+                </div>
+            </div>
+
+            <!-- Løpende -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🔄 Løpende</h2>
+                    <button class="btn btn-small" onclick="resetSection('ongoing')">Reset</button>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ongoing-1" onchange="saveState()">
+                    <label for="ongoing-1">Vær tilgjengelig for spørsmål fra andre crew</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ongoing-2" onchange="saveState()">
+                    <label for="ongoing-2">Hold øye med at folk har det bra i lokalet</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ongoing-3" onchange="saveState()">
+                    <label for="ongoing-3">Meld ifra til skiftleder/chiefs hvis noe utstyr går i stykker</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ongoing-4" onchange="saveState()">
+                    <label for="ongoing-4">Sørg for at kinoen starter når den skal</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ongoing-5" onchange="saveState()">
+                    <label for="ongoing-5">Hold oversikt over bordspill og pass på at de kommer tilbake på plass</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ongoing-6" onchange="saveState()">
+                    <label for="ongoing-6">Sørg for at oppskjært brød alltid er tildekket</label>
+                </div>
+            </div>
+
+            <!-- Reset alt -->
+            <div class="reset-all-container">
+                <button class="btn btn-danger" onclick="resetAll()">🔄 Reset alt</button>
+            </div>
+
+            <!-- Tips -->
+            <div class="section tips-box">
+                <h3>💡 Tips</h3>
+                <ul>
+                    <li>Det er lettere å "gjøre litt her og der" hele vakten enn å stå en time eller to i oppvasken</li>
+                    <li>Sett på alarm på telefonen, så slipper du å glemme noe</li>
+                    <li>Hold god kommunikasjon med Kjøkken slik at alt er klart til middags-servering</li>
+                    <li>Brød holder seg best om det er nyskjært, så unngå å skjære opp flere brød enn nødvendig</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is already logged in
+        window.onload = function() {
+            const username = localStorage.getItem('crewcare_username');
+            if (username) {
+                showMainApp(username);
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username) {
+                localStorage.setItem('crewcare_username', username);
+                showMainApp(username);
+            } else {
+                alert('Vennligst skriv inn navnet ditt');
+            }
+        }
+
+        function logout() {
+            if (confirm('Er du sikker på at du vil logge ut?')) {
+                localStorage.removeItem('crewcare_username');
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        }
+
+        function showMainApp(username) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('currentUsername').textContent = username;
+            loadState();
+        }
+
+        function saveState() {
+            const username = localStorage.getItem('crewcare_username');
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const state = {};
+            
+            checkboxes.forEach(checkbox => {
+                state[checkbox.id] = checkbox.checked;
+            });
+
+            localStorage.setItem(`crewcare_state_${username}`, JSON.stringify(state));
+        }
+
+        function loadState() {
+            const username = localStorage.getItem('crewcare_username');
+            const savedState = localStorage.getItem(`crewcare_state_${username}`);
+            
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                Object.keys(state).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = state[id];
+                    }
+                });
+            }
+        }
+
+        function resetSection(sectionName) {
+            if (confirm('Er du sikker på at du vil resette denne seksjonen?')) {
+                const checkboxes = document.querySelectorAll(`input[id^="${sectionName}"]`);
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                saveState();
+            }
+        }
+
+        function resetAll() {
+            if (confirm('Er du sikker på at du vil resette ALLE avkryssingene?')) {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                saveState();
+            }
+        }
+
+        // Allow Enter key to login
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('usernameInput');
+            if (input) {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        login();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -312,8 +312,7 @@
             <div class="header">
                 <div>
                     <h1>Service Sjekkliste</h1>
-                    <div class="username-display">Innlogget som: <strong id="currentUsername"></strong></div>
-                    <div class="username-display" style="margin-top: 5px;">📊 Data fra: Google Sheet</div>
+                    <div class="username-display">📊 Data fra: Google Sheet</div>
                 </div>
                 <button class="btn btn-secondary" onclick="refreshData()">🔄 Oppdater data</button>
             </div>
@@ -342,7 +341,7 @@
         </div>
     </div>
 
-    <script>
+     <script>
         // CONFIGURE YOUR GOOGLE SHEET HERE
         const GOOGLE_SHEET_ID = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE'; // Replace with your Google Sheet ID
         const GOOGLE_SHEET_GID = '1316132220'; // Usually '0' for the first sheet
@@ -351,17 +350,7 @@
 
         // Load data from Google Sheet
         async function loadGoogleSheetData() {
-            document.getElementById('loadingMessage').style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'none';
-            
             try {
-                // If using a demo/fallback, use local data
-                // if (GOOGLE_SHEET_ID === '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE') {
-                //     await loadDemoData();
-                //     return;
-                // }
-                
                 const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=${GOOGLE_SHEET_GID}`;
                 const response = await fetch(url);
                 
@@ -376,44 +365,6 @@
                 console.error('Error loading Google Sheet:', error);
                 showError('Kunne ikke laste data fra Google Sheet. Sjekk at Sheet ID er korrekt og at arket er delt offentlig.');
             }
-        }
-
-        // Demo data fallback
-        async function loadDemoData() {
-            // Simulate loading delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            checklistData = [
-                { category: "⏰ Hver time", task: "Gå rundt og tørk av bord som trenger rengjøring og sjekk at alt ser ryddig ut" },
-                { category: "⏰ Hver time", task: "Sjekk buffeten og fyll på det som mangler (brød, pålegg, yoghurt, juice)" },
-                { category: "⏰ Hver time", task: "Rydd bort skitne tallerkener, kopper og bestikk til oppvaskmaskinen" },
-                { category: "⏰ Hver 2. time", task: "Sjekk kaffemaskinen, lag ny kaffe hvis den er lav" },
-                { category: "⏰ Hver 2. time", task: "Sjekk brød, skjær opp og fyll på ved behov" },
-                { category: "⏰ Hver 2. time", task: "Fyll på kopper, glass og bestikk ved buffeten" },
-                { category: "⏰ Hver 2. time", task: "Tøm søppelbøtter som er over halvfulle" },
-                { category: "⏰ Hver 2. time", task: "Sjekk at det er nok servietter og kjøkkenruller tilgjengelig" },
-                { category: "⏰ Hver 4. time", task: "Rengjør arbeidsflater i cafeteria" },
-                { category: "⏰ Hver 4. time", task: "Feie gulvet foran og bak buffeten" },
-                { category: "⏰ Hver 4. time", task: "Sjekk buffet og lag klar nye brett til ting som begynner å bli tomme" },
-                { category: "🚀 Ved skiftstart", task: "Sjekk at alt utstyr fungerer (kaffemaskin, oppvaskmaskin, kjølebuffet, juicemaskin)" },
-                { category: "🚀 Ved skiftstart", task: "Sørg for at det er nok rent bestikk og service" },
-                { category: "🚀 Ved skiftstart", task: "Notér eventuelle mangler eller problemer, rapporter til skiftleder eller chiefs om nødvendig" },
-                { category: "🏁 Ved skiftslutt", task: "Sørg for at buffeten er fylt opp for neste skift" },
-                { category: "🏁 Ved skiftslutt", task: "Tøm all søppel" },
-                { category: "🏁 Ved skiftslutt", task: "Gi beskjed til neste vakt om spesielle hendelser eller ting å følge med på" },
-                { category: "🍽️ Ved servering av varme måltider", task: "Forbered (rydd og vask) serveringsområdet 30 minutter før servering" },
-                { category: "🍽️ Ved servering av varme måltider", task: "Sett frem tallerken, bestikk og glass" },
-                { category: "🍽️ Ved servering av varme måltider", task: 'Rydd "front of house" grundig etter måltidet er ferdig, vask over serveringsområde' },
-                { category: "🔄 Løpende", task: "Vær tilgjengelig for spørsmål fra andre crew" },
-                { category: "🔄 Løpende", task: "Hold øye med at folk har det bra i lokalet" },
-                { category: "🔄 Løpende", task: "Meld ifra til skiftleder/chiefs hvis noe utstyr går i stykker" },
-                { category: "🔄 Løpende", task: "Sørg for at kinoen starter når den skal" },
-                { category: "🔄 Løpende", task: "Hold oversikt over bordspill og pass på at de kommer tilbake på plass" },
-                { category: "🔄 Løpende", task: "Sørg for at oppskjært brød alltid er tildekket" }
-            ];
-            
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
         }
 
         function parseCSV(csvText) {
@@ -447,8 +398,11 @@
                 return;
             }
 
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
+            // Hide loading screen and show main app
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            generateChecklist();
+            loadState();
             
             console.log(`Loaded ${checklistData.length} items from Google Sheet`);
         }
@@ -457,13 +411,23 @@
             document.getElementById('errorText').textContent = message;
             document.getElementById('errorMessage').style.display = 'block';
             document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'none';
         }
 
-       function generateChecklist() {
+        function generateChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
-        
+
+            // Simple hash function for stable IDs
+            function hashCode(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(36);
+            }
+
             // Group items by category
             const categories = {};
             checklistData.forEach(item => {
@@ -472,63 +436,42 @@
                 }
                 categories[item.category].push(item.task);
             });
-        
+
             // Generate HTML for each category
             Object.keys(categories).forEach((category, index) => {
                 const sectionId = `section-${index}`;
+                
+                let tasksHTML = '';
+                categories[category].forEach((task, taskIndex) => {
+                    const taskId = 'task-' + hashCode(category + task);
+                    tasksHTML += `
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="${taskId}" onchange="saveState()">
+                            <label for="${taskId}">${task}</label>
+                        </div>
+                    `;
+                });
+                
                 const sectionHTML = `
                     <div class="section">
                         <div class="section-header">
                             <h2>${category}</h2>
                             <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
                         </div>
-                        ${categories[category].map((task, taskIndex) => {
-                            const taskId = 'task-' + btoa(encodeURIComponent(category + task)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
-                            return `
-                                <div class="checkbox-item">
-                                    <input type="checkbox" id="${taskId}" onchange="saveState()">
-                                    <label for="${taskId}">${task}</label>
-                                </div>
-                            `;
-                        }).join('')}
+                        ${tasksHTML}
                     </div>
                 `;
                 container.innerHTML += sectionHTML;
             });
         }
 
-
-        function login() {
-            const username = document.getElementById('usernameInput').value.trim();
-            if (username) {
-                localStorage.setItem('crewcare_username', username);
-                showMainApp(username);
-            } else {
-                alert('Vennligst skriv inn navnet ditt');
-            }
-        }
-
-        function showMainApp(username) {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            document.getElementById('currentUsername').textContent = username;
-            generateChecklist();
-            loadState();
-        }
-
         function refreshData() {
             if (confirm('Dette vil laste data på nytt fra Google Sheet. Fortsett?')) {
-                loadGoogleSheetData().then(() => {
-                    if (checklistData.length > 0) {
-                        generateChecklist();
-                        loadState();
-                    }
-                });
+                loadGoogleSheetData();
             }
         }
 
         function saveState() {
-            const username = localStorage.getItem('crewcare_username');
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             const state = {};
             
@@ -536,12 +479,11 @@
                 state[checkbox.id] = checkbox.checked;
             });
 
-            localStorage.setItem(`crewcare_state_google_${username}`, JSON.stringify(state));
+            localStorage.setItem('crewcare_state', JSON.stringify(state));
         }
 
         function loadState() {
-            const username = localStorage.getItem('crewcare_username');
-            const savedState = localStorage.getItem(`crewcare_state_google_${username}`);
+            const savedState = localStorage.getItem('crewcare_state');
             
             if (savedState) {
                 const state = JSON.parse(savedState);
@@ -574,18 +516,9 @@
             }
         }
 
-        // Allow Enter key to login
+        // Load data on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadGoogleSheetData();
-            
-            const input = document.getElementById('usernameInput');
-            if (input) {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        login();
-                    }
-                });
-            }
         });
     </script>
 </body>

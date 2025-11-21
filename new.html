@@ -357,10 +357,10 @@
             
             try {
                 // If using a demo/fallback, use local data
-                if (GOOGLE_SHEET_ID === '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE') {
-                    await loadDemoData();
-                    return;
-                }
+                // if (GOOGLE_SHEET_ID === '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE') {
+                //     await loadDemoData();
+                //     return;
+                // }
                 
                 const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=${GOOGLE_SHEET_GID}`;
                 const response = await fetch(url);
@@ -482,11 +482,14 @@
                             <h2>${category}</h2>
                             <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
                         </div>
-                        ${categories[category].map((task, taskIndex) => `
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="${sectionId}-${taskIndex}" onchange="saveState()">
-                                <label for="${sectionId}-${taskIndex}">${task}</label>
-                            </div>
+                        ${categories[category].map((task, taskIndex) => {
+                            const taskId = 'task-' + btoa(category + task).replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
+                            return `
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="${taskId}" onchange="saveState()">
+                                    <label for="${taskId}">${task}</label>
+                                </div>
+                            `;
                         `).join('')}
                     </div>
                 `;

@@ -460,10 +460,10 @@
             document.getElementById('loginForm').style.display = 'none';
         }
 
-        function generateChecklist() {
+       function generateChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
-
+        
             // Group items by category
             const categories = {};
             checklistData.forEach(item => {
@@ -472,7 +472,7 @@
                 }
                 categories[item.category].push(item.task);
             });
-
+        
             // Generate HTML for each category
             Object.keys(categories).forEach((category, index) => {
                 const sectionId = `section-${index}`;
@@ -483,19 +483,20 @@
                             <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
                         </div>
                         ${categories[category].map((task, taskIndex) => {
-                            const taskId = 'task-' + btoa(category + task).replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
+                            const taskId = 'task-' + btoa(encodeURIComponent(category + task)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
                             return `
                                 <div class="checkbox-item">
                                     <input type="checkbox" id="${taskId}" onchange="saveState()">
                                     <label for="${taskId}">${task}</label>
                                 </div>
                             `;
-                        `).join('')}
+                        }).join('')}
                     </div>
                 `;
                 container.innerHTML += sectionHTML;
             });
         }
+
 
         function login() {
             const username = document.getElementById('usernameInput').value.trim();

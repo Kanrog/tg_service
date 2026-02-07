@@ -661,7 +661,7 @@
                 });
                 
                 const sectionHTML = `
-                    <div class="section">
+                    <div class="section" id="${sectionId}">
                         <div class="section-header">
                             <h2>${category}</h2>
                             <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
@@ -709,11 +709,14 @@
 
         function resetSection(sectionId) {
             if (confirm('Er du sikker på at du vil resette denne seksjonen?')) {
-                const checkboxes = document.querySelectorAll(`input[id^="${sectionId}"]`);
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                saveState();
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    saveState();
+                }
             }
         }
 

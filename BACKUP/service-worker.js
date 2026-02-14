@@ -1,5 +1,5 @@
-const CACHE_NAME = 'service-sjekkliste-v2';
-const RUNTIME_CACHE = 'service-sjekkliste-runtime-v2';
+const CACHE_NAME = 'service-sjekkliste-v1';
+const RUNTIME_CACHE = 'service-sjekkliste-runtime-v1';
 
 // Files to cache immediately on install
 const STATIC_ASSETS = [
@@ -116,30 +116,6 @@ self.addEventListener('fetch', (event) => {
 
         return response;
       });
-    })
-  );
-});
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-  console.log('[Service Worker] Notification click received.');
-  
-  event.notification.close();
-  
-  // Open or focus the app
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Check if there's already a window open
-      for (let i = 0; i < clientList.length; i++) {
-        const client = clientList[i];
-        if (client.url === self.registration.scope && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      // If no window is open, open a new one
-      if (clients.openWindow) {
-        return clients.openWindow('/');
-      }
     })
   );
 });

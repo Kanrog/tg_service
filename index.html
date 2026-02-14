@@ -79,6 +79,7 @@
             cursor: pointer;
             transition: background 0.3s;
             font-weight: 600;
+            width: 100%;
         }
 
         .btn:hover {
@@ -105,6 +106,7 @@
             padding: 8px 16px;
             font-size: 14px;
             margin-left: 10px;
+            width: auto;
         }
 
         .btn-success {
@@ -160,6 +162,102 @@
         .section-header h2 {
             color: #667eea;
             font-size: 20px;
+        }
+
+        /* Notification Settings Styles */
+        .settings-group {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .settings-group:last-child {
+            border-bottom: none;
+        }
+
+        .settings-group label {
+            display: block;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .settings-group select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .settings-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-setting {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-setting input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-setting label {
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0;
+            font-weight: normal;
+            color: #333;
+            flex-grow: 1;
+        }
+
+        .sub-setting {
+            margin-left: 39px;
+            margin-top: 10px;
+        }
+
+        .sub-setting select {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .status-display {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .status-display p {
+            margin: 5px 0;
+            color: #1976D2;
+            font-size: 14px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .warning-box p {
+            margin: 5px 0;
+            color: #856404;
+            font-size: 14px;
         }
 
         .checkbox-item {
@@ -248,249 +346,230 @@
 
         .error-message {
             background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
+            border-left: 5px solid #dc3545;
             color: #721c24;
-            text-align: center;
-        }
-
-        .success-message {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            color: #155724;
-            text-align: center;
-        }
-
-        .info-message {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            color: #0c5460;
-            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
         }
 
         .update-notification {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #667eea;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
             color: white;
-            padding: 15px 25px;
+            padding: 15px 20px;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             display: none;
             z-index: 1000;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 20px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
+            max-width: 300px;
         }
 
         .update-notification button {
-            margin-left: 15px;
-            padding: 8px 16px;
+            margin-top: 10px;
             background: white;
-            color: #667eea;
+            color: #28a745;
             border: none;
+            padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
         }
 
         .offline-indicator {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #ff9800;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
             display: none;
+            z-index: 1000;
+            font-size: 14px;
         }
 
-        .online-indicator {
-            background: #d4edda;
-            color: #155724;
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
 
-            .login-card {
-                padding: 30px 20px;
+            .header {
+                padding: 15px;
             }
 
             .section {
                 padding: 15px;
             }
 
-            .header {
-                text-align: center;
-                justify-content: center;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .btn-small {
-                margin-left: 0;
-                margin-top: 5px;
+            .login-card {
+                padding: 30px 20px;
             }
 
             .update-notification {
-                bottom: 10px;
-                left: 10px;
                 right: 10px;
-                transform: none;
-                width: auto;
+                top: 10px;
+                max-width: calc(100% - 20px);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <!-- Offline/Online Indicator -->
-        <div id="offlineIndicator" class="offline-indicator">
-            📡 Frakoblet - viser lagret data
-        </div>
-        <div id="onlineIndicator" class="online-indicator" style="display: none;">
-            ✅ Tilkoblet igjen - oppdaterer data...
-        </div>
-
-        <!-- Login Screen -->
+    <div class="container">
+        <!-- Loading Screen -->
         <div id="loginScreen" class="login-card">
-            <h1>Service Sjekkliste</h1>
-            <h2 style="color: #666; margin-bottom: 30px;">The Gathering</h2>
+            <h1>🎮 Service Sjekkliste</h1>
+            <p style="color: #666; margin-bottom: 30px;">The Gathering</p>
             
             <div id="loadingMessage" class="loading">
                 <div class="loading-spinner"></div>
-                <p>Laster sjekkliste fra Google Sheet...</p>
+                <p>Laster data fra Google Sheet...</p>
             </div>
             
-            <div id="errorMessage" style="display: none;" class="error-message">
-                <p>❌ <span id="errorText"></span></p>
-                <button class="btn btn-small" onclick="loadGoogleSheetData()" style="margin-top: 10px;">Prøv igjen</button>
-            </div>
-            
-            <div id="loginForm" style="display: none;">
-                <div class="success-message">
-                    <p>✅ Sjekkliste lastet fra Google Sheet</p>
-                </div>
-                <input type="text" id="usernameInput" placeholder="Skriv inn navnet ditt" />
-                <button class="btn" onclick="login()">Start</button>
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <strong>⚠️ Feil</strong>
+                <p id="errorText"></p>
             </div>
         </div>
 
         <!-- Main App -->
         <div id="mainApp" style="display: none;">
+            <!-- Header -->
             <div class="header">
-                <div>
-                    <h1>Service Sjekkliste</h1>
-                    <div class="username-display" id="pwaStatus">📱 PWA-modus aktiv</div>
+                <h1>📋 Service Sjekkliste</h1>
+                <button class="btn btn-small btn-secondary" onclick="refreshData()">↻ Oppdater data</button>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🔔 Påminnelser</h2>
                 </div>
-                <button class="btn btn-secondary" onclick="refreshData()">🔄 Oppdater data</button>
+
+                <div class="settings-group">
+                    <label for="shiftSelect">Mitt skift:</label>
+                    <select id="shiftSelect" onchange="saveNotificationSettings()">
+                        <option value="">Velg skift...</option>
+                        <option value="day">Dag (08:00-16:00)</option>
+                        <option value="evening">Kveld (16:00-00:00)</option>
+                        <option value="night">Natt (00:00-08:00)</option>
+                    </select>
+                </div>
+
+                <div class="settings-group">
+                    <div class="checkbox-setting">
+                        <input type="checkbox" id="shiftStartReminder" onchange="saveNotificationSettings()">
+                        <label for="shiftStartReminder">Påminn meg før skiftet starter</label>
+                    </div>
+                    
+                    <div class="sub-setting" id="shiftStartLeadTime" style="display: none;">
+                        <select id="shiftStartMinutes" onchange="saveNotificationSettings()">
+                            <option value="15">15 minutter før</option>
+                            <option value="30">30 minutter før</option>
+                            <option value="60">60 minutter før</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="checkbox-setting">
+                        <input type="checkbox" id="hourlyReminders" onchange="saveNotificationSettings()">
+                        <label for="hourlyReminders">Timebaserte oppgavepåminnelser</label>
+                    </div>
+                    <p style="margin-left: 39px; margin-top: 5px; font-size: 14px; color: #666;">
+                        Får påminnelser 10 min før hver time med oppgaver som skal gjøres
+                    </p>
+                </div>
+
+                <div id="notificationStatus" class="status-display" style="display: none;">
+                    <p><strong>Status:</strong></p>
+                    <p id="statusText"></p>
+                    <p id="nextReminderText"></p>
+                </div>
+
+                <div id="notificationWarning" class="warning-box" style="display: none;">
+                    <p><strong>⚠️ OBS:</strong></p>
+                    <p id="warningText"></p>
+                </div>
+
+                <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="requestNotificationPermission()">
+                    Aktiver påminnelser
+                </button>
             </div>
 
-            <div id="checklistContainer">
-                <!-- Checklist items will be dynamically inserted here -->
-            </div>
+            <!-- Checklist Container -->
+            <div id="checklistContainer"></div>
 
-            <!-- Reset alt -->
+            <!-- Reset All Button -->
             <div class="reset-all-container">
-                <button class="btn btn-danger" onclick="resetAll()">🔄 Reset alt</button>
-            </div>
-
-            <!-- Tips -->
-            <div class="section tips-box">
-                <h3>💡 Tips</h3>
-                <ul>
-                    <li>Det er lettere å "gjøre litt her og der" hele vakten enn å stå en time eller to i oppvasken</li>
-                    <li>Sett på alarm på telefonen, så slipper du å glemme noe</li>
-                    <li>Hold god kommunikasjon med Kjøkken slik at alt er klart til middags-servering</li>
-                    <li>Brød holder seg best om det er nyskjært, så unngå å skjære opp flere brød enn nødvendig</li>
-                    <li>Husk å ta vare på hverandre, etterlat lokalet i den tilstanden du ønsker den skal være når du starter din vakt.</li>
-                    <li><strong>📱 Appen fungerer også offline!</strong> Data lastes automatisk når du er tilkoblet.</li>
-                </ul>
+                <button class="btn btn-danger" onclick="resetAll()">Reset alle avkrysninger</button>
             </div>
         </div>
     </div>
 
     <!-- Update Notification -->
     <div id="updateNotification" class="update-notification">
-        <span id="updateMessage">Nye data tilgjengelig!</span>
-        <button onclick="reloadPage()">Last inn</button>
+        <strong>📱 Oppdatering tilgjengelig</strong>
+        <p id="updateMessage"></p>
+        <button onclick="reloadPage()">Oppdater nå</button>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator">
+        📡 Offline-modus
     </div>
 
     <script>
-        // CONFIGURE YOUR GOOGLE SHEET HERE
-        const GOOGLE_SHEET_ID = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE';
-        const GOOGLE_SHEET_GID = '1316132220';
-        
-        let checklistData = [];
+        // Configuration
+        const GOOGLE_SHEET_ID = '1tKLGZLVlTGXdDy6AUmwbI4D9IAmVGxJY0kVqOFn_fvc';
+        const GOOGLE_SHEET_GID = '0';
 
-        // Register Service Worker
+        // State
+        let checklistData = [];
+        let notificationInterval = null;
+        let shiftStartTimeout = null;
+
+        // Shift configurations
+        const SHIFTS = {
+            day: { name: 'Dag', start: '08:00', end: '16:00', column: 'Day Time' },
+            evening: { name: 'Kveld', start: '16:00', end: '00:00', column: 'Evening Time' },
+            night: { name: 'Natt', start: '00:00', end: '08:00', column: 'Night Time' }
+        };
+
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
-                    .then((registration) => {
+                    .then(registration => {
                         console.log('Service Worker registered:', registration);
                         
-                        // Check for updates periodically
-                        setInterval(() => {
-                            registration.update();
-                        }, 60000); // Check every minute
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showUpdateNotification('En ny versjon er tilgjengelig!');
+                                }
+                            });
+                        });
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         console.log('Service Worker registration failed:', error);
                     });
+            });
 
-                // Listen for messages from service worker
-                navigator.serviceWorker.addEventListener('message', (event) => {
-                    if (event.data && event.data.type === 'DATA_UPDATED') {
-                        showUpdateNotification(event.data.message);
-                    }
-                });
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'DATA_UPDATED') {
+                    showUpdateNotification(event.data.message);
+                }
             });
         }
 
-        // Monitor online/offline status
+        // Network status monitoring
         window.addEventListener('online', () => {
             const offlineIndicator = document.getElementById('offlineIndicator');
-            const onlineIndicator = document.getElementById('onlineIndicator');
-            
             if (offlineIndicator) offlineIndicator.style.display = 'none';
-            if (onlineIndicator) {
-                onlineIndicator.style.display = 'block';
-                setTimeout(() => {
-                    onlineIndicator.style.display = 'none';
-                }, 3000);
-            }
-            
-            // Try to refresh data when coming back online
             loadGoogleSheetData(true);
         });
 
@@ -508,7 +587,6 @@
             if (notification) {
                 notification.style.display = 'block';
                 
-                // Auto-hide after 10 seconds
                 setTimeout(() => {
                     notification.style.display = 'none';
                 }, 10000);
@@ -541,7 +619,6 @@
             } catch (error) {
                 console.error('Error loading Google Sheet:', error);
                 
-                // Try to load from cache
                 const cachedData = localStorage.getItem('crewcare_checklist');
                 if (cachedData) {
                     console.log('Loading from cached data');
@@ -554,8 +631,8 @@
                     
                     generateChecklist();
                     loadState();
+                    loadNotificationSettings();
                     
-                    // Show offline indicator if not already shown
                     if (!navigator.onLine) {
                         document.getElementById('offlineIndicator').style.display = 'block';
                     }
@@ -575,17 +652,42 @@
 
             checklistData = [];
             
-            // Skip header row and parse data
+            // Parse header to find column indices
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const enabledIdx = headers.findIndex(h => h.toLowerCase() === 'enabled');
+            const categoryIdx = headers.findIndex(h => h.toLowerCase() === 'category');
+            const taskIdx = headers.findIndex(h => h.toLowerCase() === 'task');
+            const dayTimeIdx = headers.findIndex(h => h.toLowerCase() === 'day time');
+            const eveningTimeIdx = headers.findIndex(h => h.toLowerCase() === 'evening time');
+            const nightTimeIdx = headers.findIndex(h => h.toLowerCase() === 'night time');
+            const intervalIdx = headers.findIndex(h => h.toLowerCase() === 'interval');
+
+            // Parse data rows
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (line) {
-                    // Handle quoted fields with commas
-                    const match = line.match(/^"?([^"]*)"?,\s*"?([^"]*)"?$/);
-                    if (match) {
-                        const category = match[1].trim();
-                        const task = match[2].trim();
+                    const fields = parseCSVLine(line);
+                    
+                    if (fields.length > Math.max(enabledIdx, categoryIdx, taskIdx, dayTimeIdx, eveningTimeIdx, nightTimeIdx, intervalIdx)) {
+                        const enabled = fields[enabledIdx]?.trim().toUpperCase() === 'TRUE';
+                        const category = fields[categoryIdx]?.trim() || '';
+                        const task = fields[taskIdx]?.trim() || '';
+                        const dayTime = fields[dayTimeIdx]?.trim() || '';
+                        const eveningTime = fields[eveningTimeIdx]?.trim() || '';
+                        const nightTime = fields[nightTimeIdx]?.trim() || '';
+                        const intervalStr = fields[intervalIdx]?.trim() || '';
+                        const interval = intervalStr ? parseInt(intervalStr, 10) : null;
+                        
                         if (category && task) {
-                            checklistData.push({ category, task });
+                            checklistData.push({
+                                enabled,
+                                category,
+                                task,
+                                dayTime,
+                                eveningTime,
+                                nightTime,
+                                interval
+                            });
                         }
                     }
                 }
@@ -596,16 +698,37 @@
                 return;
             }
 
-            // Cache the checklist data
             localStorage.setItem('crewcare_checklist', JSON.stringify(checklistData));
 
-            // Hide loading screen and show main app
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             generateChecklist();
             loadState();
+            loadNotificationSettings();
             
             console.log(`Loaded ${checklistData.length} items from Google Sheet`);
+        }
+
+        function parseCSVLine(line) {
+            const fields = [];
+            let field = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    fields.push(field);
+                    field = '';
+                } else {
+                    field += char;
+                }
+            }
+            fields.push(field);
+            
+            return fields.map(f => f.replace(/^"|"$/g, ''));
         }
 
         function showError(message) {
@@ -614,17 +737,10 @@
             document.getElementById('loadingMessage').style.display = 'none';
         }
 
-        function login() {
-            // This function was in original but not used - keeping for compatibility
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-        }
-
         function generateChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
 
-            // Simple hash function for stable IDs
             function hashCode(str) {
                 let hash = 0;
                 for (let i = 0; i < str.length; i++) {
@@ -635,7 +751,6 @@
                 return Math.abs(hash).toString(36);
             }
 
-            // Group items by category
             const categories = {};
             checklistData.forEach(item => {
                 if (!categories[item.category]) {
@@ -644,12 +759,11 @@
                 categories[item.category].push(item.task);
             });
 
-            // Generate HTML for each category
             Object.keys(categories).forEach((category, index) => {
                 const sectionId = `section-${index}`;
                 
                 let tasksHTML = '';
-                categories[category].forEach((task, taskIndex) => {
+                categories[category].forEach((task) => {
                     const taskId = 'task-' + hashCode(category + task);
                     tasksHTML += `
                         <div class="checkbox-item">
@@ -726,6 +840,378 @@
                     checkbox.checked = false;
                 });
                 saveState();
+            }
+        }
+
+        // ====== NOTIFICATION SYSTEM ======
+
+        function saveNotificationSettings() {
+            const settings = {
+                shift: document.getElementById('shiftSelect').value,
+                shiftStartReminder: document.getElementById('shiftStartReminder').checked,
+                shiftStartMinutes: document.getElementById('shiftStartMinutes').value,
+                hourlyReminders: document.getElementById('hourlyReminders').checked
+            };
+
+            localStorage.setItem('notification_settings', JSON.stringify(settings));
+            
+            // Show/hide sub-settings
+            document.getElementById('shiftStartLeadTime').style.display = 
+                settings.shiftStartReminder ? 'block' : 'none';
+
+            updateNotificationStatus();
+            setupNotifications();
+        }
+
+        function loadNotificationSettings() {
+            const saved = localStorage.getItem('notification_settings');
+            
+            if (saved) {
+                const settings = JSON.parse(saved);
+                document.getElementById('shiftSelect').value = settings.shift || '';
+                document.getElementById('shiftStartReminder').checked = settings.shiftStartReminder || false;
+                document.getElementById('shiftStartMinutes').value = settings.shiftStartMinutes || '15';
+                document.getElementById('hourlyReminders').checked = settings.hourlyReminders || false;
+                
+                document.getElementById('shiftStartLeadTime').style.display = 
+                    settings.shiftStartReminder ? 'block' : 'none';
+            }
+
+            updateNotificationStatus();
+            setupNotifications();
+        }
+
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                alert('Din nettleser støtter ikke varsler');
+                return;
+            }
+
+            const permission = await Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                updateNotificationStatus();
+                setupNotifications();
+            } else {
+                alert('Du må gi tillatelse til varsler for at påminnelser skal fungere');
+            }
+        }
+
+        function updateNotificationStatus() {
+            const settings = getNotificationSettings();
+            const statusDiv = document.getElementById('notificationStatus');
+            const warningDiv = document.getElementById('notificationWarning');
+            const enableBtn = document.getElementById('enableNotificationsBtn');
+            const statusText = document.getElementById('statusText');
+            const nextReminderText = document.getElementById('nextReminderText');
+            const warningText = document.getElementById('warningText');
+
+            // Check if notifications are supported
+            if (!('Notification' in window)) {
+                warningDiv.style.display = 'block';
+                warningText.textContent = 'Din nettleser støtter ikke varsler';
+                statusDiv.style.display = 'none';
+                enableBtn.style.display = 'none';
+                return;
+            }
+
+            // Check notification permission
+            if (Notification.permission === 'default') {
+                enableBtn.style.display = 'block';
+                statusDiv.style.display = 'none';
+                warningDiv.style.display = 'none';
+                return;
+            }
+
+            if (Notification.permission === 'denied') {
+                warningDiv.style.display = 'block';
+                warningText.textContent = 'Varsler er blokkert. Gå til nettleserinnstillinger for å aktivere.';
+                statusDiv.style.display = 'none';
+                enableBtn.style.display = 'none';
+                return;
+            }
+
+            enableBtn.style.display = 'none';
+
+            // Check if shift is selected
+            if (!settings.shift) {
+                statusDiv.style.display = 'none';
+                warningDiv.style.display = 'block';
+                warningText.textContent = 'Velg et skift for å aktivere påminnelser';
+                return;
+            }
+
+            // Check if any reminders are enabled
+            if (!settings.shiftStartReminder && !settings.hourlyReminders) {
+                statusDiv.style.display = 'none';
+                warningDiv.style.display = 'block';
+                warningText.textContent = 'Aktiver minst én type påminnelse';
+                return;
+            }
+
+            // Show status
+            warningDiv.style.display = 'none';
+            statusDiv.style.display = 'block';
+            
+            const shiftName = SHIFTS[settings.shift].name;
+            let statusParts = [];
+            
+            if (settings.shiftStartReminder) {
+                statusParts.push(`Skiftstart (${settings.shiftStartMinutes} min før)`);
+            }
+            if (settings.hourlyReminders) {
+                statusParts.push('Timebaserte oppgaver');
+            }
+            
+            statusText.textContent = `Påminnelser aktive for ${shiftName}-skift: ${statusParts.join(', ')}`;
+            
+            // Calculate next reminder
+            const nextReminder = getNextReminderTime(settings);
+            if (nextReminder) {
+                const timeString = nextReminder.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+                nextReminderText.textContent = `Neste påminnelse: ${timeString}`;
+            } else {
+                nextReminderText.textContent = 'Ingen planlagte påminnelser for øyeblikket';
+            }
+
+            // Check if running as PWA (iOS requirement)
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                window.navigator.standalone === true;
+            
+            if (!isStandalone && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                warningDiv.style.display = 'block';
+                warningText.textContent = 'På iOS må du legge til appen på hjemskjermen for at varsler skal fungere';
+            }
+        }
+
+        function getNotificationSettings() {
+            const saved = localStorage.getItem('notification_settings');
+            return saved ? JSON.parse(saved) : {
+                shift: '',
+                shiftStartReminder: false,
+                shiftStartMinutes: '15',
+                hourlyReminders: false
+            };
+        }
+
+        function getNextReminderTime(settings) {
+            if (!settings.shift) return null;
+
+            const now = new Date();
+            const shift = SHIFTS[settings.shift];
+            
+            // Parse shift start time
+            const [startHour, startMinute] = shift.start.split(':').map(Number);
+            const shiftStart = new Date(now);
+            shiftStart.setHours(startHour, startMinute, 0, 0);
+
+            // If shift start is in the past today, set to tomorrow
+            if (shiftStart < now) {
+                shiftStart.setDate(shiftStart.getDate() + 1);
+            }
+
+            let nextReminder = null;
+
+            // Check shift start reminder
+            if (settings.shiftStartReminder) {
+                const reminderTime = new Date(shiftStart.getTime() - settings.shiftStartMinutes * 60000);
+                if (reminderTime > now && (!nextReminder || reminderTime < nextReminder)) {
+                    nextReminder = reminderTime;
+                }
+            }
+
+            // Check hourly reminders
+            if (settings.hourlyReminders && isWithinShift(now, settings.shift)) {
+                const nextHour = new Date(now);
+                nextHour.setMinutes(50, 0, 0); // 10 minutes before next hour
+                
+                if (nextHour < now) {
+                    nextHour.setHours(nextHour.getHours() + 1);
+                }
+
+                if (!nextReminder || nextHour < nextReminder) {
+                    nextReminder = nextHour;
+                }
+            }
+
+            return nextReminder;
+        }
+
+        function isWithinShift(time, shiftName) {
+            const shift = SHIFTS[shiftName];
+            const [startHour, startMinute] = shift.start.split(':').map(Number);
+            const [endHour, endMinute] = shift.end.split(':').map(Number);
+            
+            const currentMinutes = time.getHours() * 60 + time.getMinutes();
+            const startMinutes = startHour * 60 + startMinute;
+            let endMinutes = endHour * 60 + endMinute;
+            
+            // Handle overnight shifts
+            if (endMinutes <= startMinutes) {
+                endMinutes += 24 * 60;
+                if (currentMinutes < startMinutes) {
+                    return currentMinutes + 24 * 60 < endMinutes;
+                }
+            }
+            
+            return currentMinutes >= startMinutes && currentMinutes < endMinutes;
+        }
+
+        function setupNotifications() {
+            // Clear existing timers
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+                notificationInterval = null;
+            }
+            if (shiftStartTimeout) {
+                clearTimeout(shiftStartTimeout);
+                shiftStartTimeout = null;
+            }
+
+            const settings = getNotificationSettings();
+            
+            if (Notification.permission !== 'granted' || !settings.shift) {
+                return;
+            }
+
+            // Setup shift start reminder
+            if (settings.shiftStartReminder) {
+                scheduleShiftStartReminder(settings);
+            }
+
+            // Setup hourly reminders
+            if (settings.hourlyReminders) {
+                scheduleHourlyReminders(settings);
+            }
+        }
+
+        function scheduleShiftStartReminder(settings) {
+            const now = new Date();
+            const shift = SHIFTS[settings.shift];
+            const [startHour, startMinute] = shift.start.split(':').map(Number);
+            
+            const shiftStart = new Date(now);
+            shiftStart.setHours(startHour, startMinute, 0, 0);
+            
+            if (shiftStart < now) {
+                shiftStart.setDate(shiftStart.getDate() + 1);
+            }
+
+            const reminderTime = new Date(shiftStart.getTime() - settings.shiftStartMinutes * 60000);
+            const timeUntilReminder = reminderTime.getTime() - now.getTime();
+
+            if (timeUntilReminder > 0) {
+                shiftStartTimeout = setTimeout(() => {
+                    showNotification(
+                        'Skiftet ditt starter snart!',
+                        `${shift.name}-skift starter om ${settings.shiftStartMinutes} minutter`
+                    );
+                    // Schedule next day's reminder
+                    scheduleShiftStartReminder(settings);
+                }, timeUntilReminder);
+            }
+        }
+
+        function scheduleHourlyReminders(settings) {
+            // Check every minute for tasks
+            notificationInterval = setInterval(() => {
+                const now = new Date();
+                
+                if (!isWithinShift(now, settings.shift)) {
+                    return; // Not in shift, skip
+                }
+                
+                // Calculate time 10 minutes from now
+                const targetTime = new Date(now.getTime() + 10 * 60000);
+                
+                const tasks = getTasksForTime(targetTime, settings.shift);
+                
+                if (tasks.length > 0) {
+                    const timeString = targetTime.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+                    const taskList = tasks.map(t => `• ${t.task}`).join('\n');
+                    
+                    showNotification(
+                        `Oppgaver kl ${timeString}`,
+                        taskList
+                    );
+                }
+            }, 60000); // Check every minute
+        }
+
+        function getTasksForTime(time, shiftName) {
+            const shift = SHIFTS[shiftName];
+            const timeString = time.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+            
+            // Get shift start time for interval calculation
+            const [shiftStartHour, shiftStartMinute] = shift.start.split(':').map(Number);
+            const taskHour = time.getHours();
+            const taskMinute = time.getMinutes();
+            
+            // For interval tasks, only trigger on exact hours (XX:00)
+            if (taskMinute === 0) {
+                // Calculate hours since shift start for interval-based tasks
+                let hoursSinceShiftStart;
+                if (shiftName === 'night' && taskHour >= shiftStartHour) {
+                    hoursSinceShiftStart = taskHour - shiftStartHour;
+                } else if (shiftName === 'night' && taskHour < shiftStartHour) {
+                    hoursSinceShiftStart = (24 - shiftStartHour) + taskHour;
+                } else if (shiftName === 'evening' && taskHour < shiftStartHour) {
+                    hoursSinceShiftStart = (24 - shiftStartHour) + taskHour;
+                } else {
+                    hoursSinceShiftStart = taskHour - shiftStartHour;
+                }
+                
+                // Get interval-based tasks
+                const intervalTasks = checklistData.filter(item => {
+                    if (!item.enabled) return false;
+                    if (!item.interval || item.interval <= 0) return false;
+                    return hoursSinceShiftStart % item.interval === 0;
+                });
+                
+                // Get time-specific tasks for this exact time
+                const timeTasks = checklistData.filter(item => {
+                    if (!item.enabled) return false;
+                    if (item.interval && item.interval > 0) return false; // Skip interval tasks
+                    
+                    let taskTime = '';
+                    if (shiftName === 'day') taskTime = item.dayTime;
+                    else if (shiftName === 'evening') taskTime = item.eveningTime;
+                    else if (shiftName === 'night') taskTime = item.nightTime;
+                    
+                    return taskTime && taskTime.trim() === timeString;
+                });
+                
+                return [...intervalTasks, ...timeTasks];
+            } else {
+                // Not on the hour - only check time-specific tasks
+                return checklistData.filter(item => {
+                    if (!item.enabled) return false;
+                    if (item.interval && item.interval > 0) return false; // Skip interval tasks
+                    
+                    let taskTime = '';
+                    if (shiftName === 'day') taskTime = item.dayTime;
+                    else if (shiftName === 'evening') taskTime = item.eveningTime;
+                    else if (shiftName === 'night') taskTime = item.nightTime;
+                    
+                    return taskTime && taskTime.trim() === timeString;
+                });
+            }
+        }
+
+        function showNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: '/icons/icon-192x192.png',
+                    badge: '/icons/icon-72x72.png',
+                    tag: 'service-reminder',
+                    requireInteraction: true
+                });
+
+                notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                };
             }
         }
 

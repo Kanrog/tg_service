@@ -1,0 +1,22 @@
+Enabled,Category,Task,Day Time,Evening Time,Night Time
+TRUE,Crew Area,Check coffee supplies,09:00,17:00,01:00
+TRUE,Crew Area,Refill water stations,11:00,19:00,03:00
+TRUE,Crew Area,Check snack inventory,14:00,22:00,06:00
+TRUE,Toilets,Check toilet paper and supplies,10:00,18:00,02:00
+TRUE,Toilets,Quick clean and tidy,12:00,20:00,04:00
+TRUE,Toilets,Deep clean,15:00,23:00,07:00
+TRUE,Security,Main entrance walkthrough,09:00,17:00,01:00
+TRUE,Security,Security walkthrough,10:00,18:00,02:00
+TRUE,Security,Security walkthrough,11:00,19:00,03:00
+TRUE,Security,Security walkthrough,12:00,20:00,04:00
+TRUE,Security,Security walkthrough,13:00,21:00,05:00
+TRUE,Security,Security walkthrough,14:00,22:00,06:00
+TRUE,Security,Security walkthrough,15:00,23:00,07:00
+TRUE,Kitchen,Restock snacks,11:00,19:00,03:00
+TRUE,Kitchen,Check refrigerator,13:00,21:00,05:00
+TRUE,General,Check lighting,10:00,18:00,02:00
+TRUE,General,Empty trash bins,12:00,20:00,04:00
+TRUE,General,Check emergency exits,14:00,22:00,06:00
+FALSE,Example,This task is disabled,10:00,18:00,02:00
+TRUE,Example,Day shift only task,11:00,,
+TRUE,Example,Evening and night only,,20:00,04:00

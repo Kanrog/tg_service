@@ -260,6 +260,22 @@
             font-size: 14px;
         }
 
+        .section ol {
+            margin-left: 20px;
+            color: #333;
+        }
+
+        .section ol li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
         .checkbox-item {
             padding: 15px;
             margin: 10px 0;
@@ -442,6 +458,49 @@
                 <button class="btn btn-small btn-secondary" onclick="refreshData()">↻ Oppdater data</button>
             </div>
 
+            <!-- Install Prompt -->
+            <div id="installPrompt" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2>📱 installer appen</h2>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>💡 Viktig!</strong></p>
+                    <p>For best opplevelse og for at varsler skal fungere, installer appen på hjemskjermen din.</p>
+                </div>
+
+                <!-- Android Instructions -->
+                <div id="androidInstructions" style="display: none; margin-top: 15px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">📱 Android:</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Trykk på <strong>menyen</strong> (tre prikker) øverst i nettleseren</li>
+                        <li>Velg <strong>"Legg til på startsiden"</strong> eller <strong>"Installer app"</strong></li>
+                        <li>Trykk <strong>"Installer"</strong> eller <strong>"Legg til"</strong></li>
+                    </ol>
+                    <button id="androidInstallBtn" class="btn" style="margin-top: 15px; display: none;" onclick="triggerInstallPrompt()">
+                        📲 Installer app nå
+                    </button>
+                </div>
+
+                <!-- iOS Instructions -->
+                <div id="iosInstructions" style="display: none; margin-top: 15px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">📱 iPhone/iPad:</h3>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Åpne denne siden i <strong>Safari</strong> (ikke Chrome eller annen nettleser)</li>
+                        <li>Trykk på <strong>Del-knappen</strong> (firkant med pil opp) nederst</li>
+                        <li>Scroll ned og velg <strong>"Legg til på Hjem-skjerm"</strong></li>
+                        <li>Trykk <strong>"Legg til"</strong></li>
+                    </ol>
+                    <p style="margin-top: 10px; color: #856404; font-size: 14px;">
+                        ⚠️ <strong>Viktig for iOS:</strong> Varsler fungerer kun når appen er lagt til på hjemskjermen!
+                    </p>
+                </div>
+
+                <button class="btn btn-secondary" style="margin-top: 15px;" onclick="dismissInstallPrompt()">
+                    Jeg har allerede installert appen
+                </button>
+            </div>
+
             <!-- Notification Settings -->
             <div class="section">
                 <div class="section-header">
@@ -530,6 +589,7 @@
         let checklistData = [];
         let notificationInterval = null;
         let shiftStartTimeout = null;
+        let deferredInstallPrompt = null;
 
         // Shift configurations
         const SHIFTS = {
@@ -1230,9 +1290,94 @@
             }
         }
 
+        // ====== INSTALL PROMPT HANDLING ======
+
+        // Capture the install prompt event (Android)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            
+            // Show the Android install button
+            const androidBtn = document.getElementById('androidInstallBtn');
+            if (androidBtn) androidBtn.style.display = 'block';
+        });
+
+        // Check if app is installed
+        function isAppInstalled() {
+            // Check if running as standalone app
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                window.navigator.standalone === true;
+            
+            // Check if user has dismissed the prompt before
+            const dismissed = localStorage.getItem('install_prompt_dismissed');
+            
+            return isStandalone || dismissed === 'true';
+        }
+
+        // Show install instructions based on device
+        function showInstallPrompt() {
+            if (isAppInstalled()) {
+                return; // Already installed or dismissed
+            }
+
+            const installPrompt = document.getElementById('installPrompt');
+            const androidInstructions = document.getElementById('androidInstructions');
+            const iosInstructions = document.getElementById('iosInstructions');
+            
+            if (!installPrompt) return;
+
+            // Detect device type
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (isIOS) {
+                iosInstructions.style.display = 'block';
+                androidInstructions.style.display = 'none';
+            } else if (isAndroid) {
+                androidInstructions.style.display = 'block';
+                iosInstructions.style.display = 'none';
+            } else {
+                // Desktop or other - show both
+                androidInstructions.style.display = 'block';
+                iosInstructions.style.display = 'block';
+            }
+            
+            installPrompt.style.display = 'block';
+        }
+
+        // Trigger install prompt (Android)
+        async function triggerInstallPrompt() {
+            if (!deferredInstallPrompt) {
+                alert('Installasjons-funksjonen er ikke tilgjengelig. Bruk nettlesermenyen for å installere.');
+                return;
+            }
+
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                dismissInstallPrompt();
+            }
+            
+            deferredInstallPrompt = null;
+        }
+
+        // Dismiss install prompt
+        function dismissInstallPrompt() {
+            localStorage.setItem('install_prompt_dismissed', 'true');
+            const installPrompt = document.getElementById('installPrompt');
+            if (installPrompt) installPrompt.style.display = 'none';
+        }
+
         // Load data on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadGoogleSheetData();
+            
+            // Show install prompt after a short delay
+            setTimeout(() => {
+                showInstallPrompt();
+            }, 2000);
         });
     </script>
 </body>

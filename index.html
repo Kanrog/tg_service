@@ -505,7 +505,12 @@
             <div class="section">
                 <div class="section-header">
                     <h2>🔔 Påminnelser</h2>
+                    <button class="btn btn-small btn-danger" onclick="disableAllNotifications()">Skru av alle varsler</button>
                 </div>
+
+                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                    💡 <strong>Tips:</strong> Fjern avkryssing for å stoppe varsler. Bruk "Skru av alle varsler" for å deaktivere alt på en gang.
+                </p>
 
                 <div class="settings-group">
                     <label for="shiftSelect">Mitt skift:</label>
@@ -583,7 +588,7 @@
     <script>
         // Configuration
         const GOOGLE_SHEET_ID = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE';
-        const GOOGLE_SHEET_GID = '0';
+        const GOOGLE_SHEET_GID = '1316132220';
 
         // State
         let checklistData = [];
@@ -713,14 +718,25 @@
             checklistData = [];
             
             // Parse header to find column indices
-            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-            const enabledIdx = headers.findIndex(h => h.toLowerCase() === 'enabled');
-            const categoryIdx = headers.findIndex(h => h.toLowerCase() === 'category');
-            const taskIdx = headers.findIndex(h => h.toLowerCase() === 'task');
-            const dayTimeIdx = headers.findIndex(h => h.toLowerCase() === 'day time');
-            const eveningTimeIdx = headers.findIndex(h => h.toLowerCase() === 'evening time');
-            const nightTimeIdx = headers.findIndex(h => h.toLowerCase() === 'night time');
-            const intervalIdx = headers.findIndex(h => h.toLowerCase() === 'interval');
+            const headerLine = lines[0];
+            const headers = parseCSVLine(headerLine).map(h => h.toLowerCase());
+            
+            console.log('Parsed headers:', headers);
+            
+            const enabledIdx = headers.findIndex(h => h === 'enabled');
+            const categoryIdx = headers.findIndex(h => h === 'category');
+            const taskIdx = headers.findIndex(h => h === 'task');
+            const dayTimeIdx = headers.findIndex(h => h === 'day time');
+            const eveningTimeIdx = headers.findIndex(h => h === 'evening time');
+            const nightTimeIdx = headers.findIndex(h => h === 'night time');
+            const intervalIdx = headers.findIndex(h => h === 'interval');
+
+            console.log('Column indices:', { enabledIdx, categoryIdx, taskIdx, dayTimeIdx, eveningTimeIdx, nightTimeIdx, intervalIdx });
+
+            if (enabledIdx === -1 || categoryIdx === -1 || taskIdx === -1) {
+                showError('Google Sheet må inneholde kolonnene: Enabled, Category, Task');
+                return;
+            }
 
             // Parse data rows
             for (let i = 1; i < lines.length; i++) {
@@ -728,27 +744,25 @@
                 if (line) {
                     const fields = parseCSVLine(line);
                     
-                    if (fields.length > Math.max(enabledIdx, categoryIdx, taskIdx, dayTimeIdx, eveningTimeIdx, nightTimeIdx, intervalIdx)) {
-                        const enabled = fields[enabledIdx]?.trim().toUpperCase() === 'TRUE';
-                        const category = fields[categoryIdx]?.trim() || '';
-                        const task = fields[taskIdx]?.trim() || '';
-                        const dayTime = normalizeTime(fields[dayTimeIdx] || '');
-                        const eveningTime = normalizeTime(fields[eveningTimeIdx] || '');
-                        const nightTime = normalizeTime(fields[nightTimeIdx] || '');
-                        const intervalStr = fields[intervalIdx]?.trim() || '';
-                        const interval = intervalStr ? parseInt(intervalStr, 10) : null;
-                        
-                        if (category && task) {
-                            checklistData.push({
-                                enabled,
-                                category,
-                                task,
-                                dayTime,
-                                eveningTime,
-                                nightTime,
-                                interval
-                            });
-                        }
+                    const enabled = fields[enabledIdx]?.toUpperCase() === 'TRUE';
+                    const category = fields[categoryIdx] || '';
+                    const task = fields[taskIdx] || '';
+                    const dayTime = normalizeTime(fields[dayTimeIdx] || '');
+                    const eveningTime = normalizeTime(fields[eveningTimeIdx] || '');
+                    const nightTime = normalizeTime(fields[nightTimeIdx] || '');
+                    const intervalStr = fields[intervalIdx] || '';
+                    const interval = intervalStr ? parseInt(intervalStr, 10) : null;
+                    
+                    if (category && task) {
+                        checklistData.push({
+                            enabled,
+                            category,
+                            task,
+                            dayTime,
+                            eveningTime,
+                            nightTime,
+                            interval
+                        });
                     }
                 }
             }
@@ -776,19 +790,27 @@
             
             for (let i = 0; i < line.length; i++) {
                 const char = line[i];
+                const nextChar = i < line.length - 1 ? line[i + 1] : null;
                 
                 if (char === '"') {
-                    inQuotes = !inQuotes;
+                    // Handle escaped quotes ("")
+                    if (nextChar === '"' && inQuotes) {
+                        field += '"';
+                        i++; // Skip next quote
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
                 } else if (char === ',' && !inQuotes) {
-                    fields.push(field);
+                    fields.push(field.trim());
                     field = '';
                 } else {
                     field += char;
                 }
             }
-            fields.push(field);
+            // Push the last field
+            fields.push(field.trim());
             
-            return fields.map(f => f.replace(/^"|"$/g, ''));
+            return fields;
         }
 
         // Normalize time format from "8:00" or "8:0" to "08:00"
@@ -938,6 +960,23 @@
             setupNotifications();
         }
 
+        function disableAllNotifications() {
+            if (confirm('Er du sikker på at du vil skru av alle varsler?')) {
+                // Uncheck all checkboxes
+                document.getElementById('shiftStartReminder').checked = false;
+                document.getElementById('hourlyReminders').checked = false;
+                
+                // Optionally clear shift selection
+                // document.getElementById('shiftSelect').value = '';
+                
+                // Save and update
+                saveNotificationSettings();
+                
+                // Show feedback
+                alert('✓ Alle varsler er skrudd av');
+            }
+        }
+
         function loadNotificationSettings() {
             const saved = localStorage.getItem('notification_settings');
             
@@ -1018,9 +1057,12 @@
 
             // Check if any reminders are enabled
             if (!settings.shiftStartReminder && !settings.hourlyReminders) {
-                statusDiv.style.display = 'none';
-                warningDiv.style.display = 'block';
-                warningText.textContent = 'Aktiver minst én type påminnelse';
+                statusDiv.style.display = 'block';
+                warningDiv.style.display = 'none';
+                statusText.textContent = '⭕ Varsler er skrudd AV';
+                statusText.style.color = '#dc3545';
+                nextReminderText.textContent = 'Kryss av en varseltype for å aktivere';
+                nextReminderText.style.color = '#6c757d';
                 return;
             }
 
@@ -1038,15 +1080,18 @@
                 statusParts.push('Timebaserte oppgaver');
             }
             
-            statusText.textContent = `Påminnelser aktive for ${shiftName}-skift: ${statusParts.join(', ')}`;
+            statusText.textContent = `✅ Påminnelser aktive for ${shiftName}-skift: ${statusParts.join(', ')}`;
+            statusText.style.color = '#1976D2';
             
             // Calculate next reminder
             const nextReminder = getNextReminderTime(settings);
             if (nextReminder) {
                 const timeString = nextReminder.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
                 nextReminderText.textContent = `Neste påminnelse: ${timeString}`;
+                nextReminderText.style.color = '#1976D2';
             } else {
                 nextReminderText.textContent = 'Ingen planlagte påminnelser for øyeblikket';
+                nextReminderText.style.color = '#6c757d';
             }
 
             // Check if running as PWA (iOS requirement)

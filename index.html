@@ -848,24 +848,136 @@
                 return Math.abs(hash).toString(36);
             }
 
-            const categories = {};
+            // Get selected shift
+            const settings = getNotificationSettings();
+            const selectedShift = settings.shift;
+
+            if (!selectedShift) {
+                // No shift selected - show message
+                container.innerHTML = `
+                    <div class="section">
+                        <p style="text-align: center; color: #666; padding: 40px 20px;">
+                            👆 Velg ditt skift i påminnelser-seksjonen over for å se sjekklisten din
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            const shift = SHIFTS[selectedShift];
+            const [shiftStartHour] = shift.start.split(':').map(Number);
+            const [shiftEndHour] = shift.end.split(':').map(Number);
+
+            // Build time-based structure
+            const tasksByTime = {};
+
             checklistData.forEach(item => {
-                if (!categories[item.category]) {
-                    categories[item.category] = [];
+                if (!item.enabled) return;
+
+                // Get time for this shift
+                let taskTime = '';
+                if (selectedShift === 'day') taskTime = item.dayTime;
+                else if (selectedShift === 'evening') taskTime = item.eveningTime;
+                else if (selectedShift === 'night') taskTime = item.nightTime;
+
+                // Handle time-specific tasks
+                if (taskTime) {
+                    if (!tasksByTime[taskTime]) {
+                        tasksByTime[taskTime] = [];
+                    }
+                    tasksByTime[taskTime].push(item);
                 }
-                categories[item.category].push(item.task);
+
+                // Handle interval tasks
+                if (item.interval && item.interval > 0) {
+                    // Calculate all hours this interval task should appear
+                    let currentHour = shiftStartHour;
+                    const maxIterations = 24; // Safety limit
+                    let iterations = 0;
+
+                    while (iterations < maxIterations) {
+                        const timeString = `${String(currentHour).padStart(2, '0')}:00`;
+                        
+                        if (!tasksByTime[timeString]) {
+                            tasksByTime[timeString] = [];
+                        }
+                        
+                        // Check if this task is already in this time slot (avoid duplicates)
+                        const isDuplicate = tasksByTime[timeString].some(t => 
+                            t.task === item.task && t.category === item.category
+                        );
+                        
+                        if (!isDuplicate) {
+                            tasksByTime[timeString].push({
+                                ...item,
+                                isInterval: true,
+                                intervalDisplay: `(hver ${item.interval}. time)`
+                            });
+                        }
+
+                        currentHour += item.interval;
+                        
+                        // Handle shift end and overnight shifts
+                        if (shiftEndHour > shiftStartHour) {
+                            if (currentHour >= shiftEndHour) break;
+                        } else {
+                            // Overnight shift
+                            if (currentHour >= 24) {
+                                currentHour -= 24;
+                            }
+                            if (currentHour >= shiftEndHour && currentHour < shiftStartHour) break;
+                        }
+                        
+                        iterations++;
+                    }
+                }
             });
 
-            Object.keys(categories).forEach((category, index) => {
+            // Sort times
+            const sortedTimes = Object.keys(tasksByTime).sort((a, b) => {
+                const [aHour, aMin] = a.split(':').map(Number);
+                const [bHour, bMin] = b.split(':').map(Number);
+                
+                // Handle overnight shifts
+                let aTime = aHour * 60 + aMin;
+                let bTime = bHour * 60 + bMin;
+                
+                if (shiftEndHour < shiftStartHour) {
+                    // Overnight shift - adjust times after midnight
+                    if (aHour < shiftStartHour) aTime += 24 * 60;
+                    if (bHour < shiftStartHour) bTime += 24 * 60;
+                }
+                
+                return aTime - bTime;
+            });
+
+            if (sortedTimes.length === 0) {
+                container.innerHTML = `
+                    <div class="section">
+                        <p style="text-align: center; color: #666; padding: 40px 20px;">
+                            Ingen oppgaver planlagt for ${shift.name}-skift
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate HTML for each time
+            sortedTimes.forEach((time, index) => {
                 const sectionId = `section-${index}`;
+                const tasks = tasksByTime[time];
                 
                 let tasksHTML = '';
-                categories[category].forEach((task) => {
-                    const taskId = 'task-' + hashCode(category + task);
+                tasks.forEach((item) => {
+                    const taskId = 'task-' + hashCode(item.category + item.task + time);
+                    const displayText = item.isInterval 
+                        ? `${item.task} ${item.intervalDisplay}`
+                        : item.task;
+                    
                     tasksHTML += `
                         <div class="checkbox-item">
                             <input type="checkbox" id="${taskId}" onchange="saveState()">
-                            <label for="${taskId}">${task}</label>
+                            <label for="${taskId}">${displayText}</label>
                         </div>
                     `;
                 });
@@ -873,7 +985,7 @@
                 const sectionHTML = `
                     <div class="section" id="${sectionId}">
                         <div class="section-header">
-                            <h2>${category}</h2>
+                            <h2>⏰ ${time}</h2>
                             <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
                         </div>
                         ${tasksHTML}
@@ -958,6 +1070,10 @@
 
             updateNotificationStatus();
             setupNotifications();
+            
+            // Regenerate checklist when shift changes
+            generateChecklist();
+            loadState();
         }
 
         function disableAllNotifications() {

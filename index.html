@@ -672,9 +672,9 @@
                         const enabled = fields[enabledIdx]?.trim().toUpperCase() === 'TRUE';
                         const category = fields[categoryIdx]?.trim() || '';
                         const task = fields[taskIdx]?.trim() || '';
-                        const dayTime = fields[dayTimeIdx]?.trim() || '';
-                        const eveningTime = fields[eveningTimeIdx]?.trim() || '';
-                        const nightTime = fields[nightTimeIdx]?.trim() || '';
+                        const dayTime = normalizeTime(fields[dayTimeIdx] || '');
+                        const eveningTime = normalizeTime(fields[eveningTimeIdx] || '');
+                        const nightTime = normalizeTime(fields[nightTimeIdx] || '');
                         const intervalStr = fields[intervalIdx]?.trim() || '';
                         const interval = intervalStr ? parseInt(intervalStr, 10) : null;
                         
@@ -729,6 +729,21 @@
             fields.push(field);
             
             return fields.map(f => f.replace(/^"|"$/g, ''));
+        }
+
+        // Normalize time format from "8:00" or "8:0" to "08:00"
+        function normalizeTime(timeStr) {
+            if (!timeStr || !timeStr.trim()) return '';
+            
+            const cleaned = timeStr.trim();
+            const parts = cleaned.split(':');
+            
+            if (parts.length !== 2) return cleaned;
+            
+            const hours = parts[0].padStart(2, '0');
+            const minutes = parts[1].padStart(2, '0');
+            
+            return `${hours}:${minutes}`;
         }
 
         function showError(message) {

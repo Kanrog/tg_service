@@ -2,9 +2,9 @@ const CACHE_NAME = 'service-sjekkliste-v3';
 const RUNTIME_CACHE = 'service-sjekkliste-runtime-v3';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
 // ─── Install ───────────────────────────────────────────────────────────────

@@ -355,7 +355,7 @@ let deferredInstallPrompt = null;
 // ─── Service Worker registration ────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('./service-worker.js')
             .then(reg => {
                 swRegistration = reg;
                 dbg('SW registered. scope=' + reg.scope + ' active=' + !!(reg.active) + ' installing=' + !!(reg.installing));

@@ -610,6 +610,13 @@ function saveNotificationSettings() {
     document.getElementById('shiftStartLeadTime').style.display =
         settings.shiftStartReminder ? 'block' : 'none';
 
+    // If user just enabled a reminder and hasn't granted permission yet, ask immediately
+    const wantsReminders = settings.shiftStartReminder || settings.hourlyReminders;
+    if (wantsReminders && Notification.permission === 'default') {
+        requestNotificationPermission();
+        return; // requestNotificationPermission calls updateNotificationStatus + pushSchedule after grant
+    }
+
     updateNotificationStatus();
     pushScheduleToServiceWorker(settings);
     generateChecklist();
@@ -665,8 +672,14 @@ async function requestNotificationPermission() {
         updateNotificationStatus();
         const settings = getNotificationSettings();
         pushScheduleToServiceWorker(settings);
+        generateChecklist();
+        loadState();
     } else {
-        showWarning('Du må gi tillatelse til varsler for at påminnelser skal fungere.');
+        // Uncheck reminder boxes so UI stays consistent with denied permission
+        document.getElementById('shiftStartReminder').checked = false;
+        document.getElementById('hourlyReminders').checked    = false;
+        saveNotificationSettings();
+        showWarning('Varseltillatelse ble avslått. Du kan aktivere det i nettleserinnstillingene.');
     }
 }
 

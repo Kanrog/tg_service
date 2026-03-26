@@ -299,6 +299,45 @@
 <div id="offlineIndicator" class="offline-indicator">📡 Offline-modus</div>
 
 <script>
+// ─── Debug helpers (must be first) ───────────────────────────────────────────
+let debugVisible = false;
+let debugLines = [];
+function dbg(msg) {
+    console.log('[DBG]', msg);
+    const ts = new Date().toLocaleTimeString('no-NO');
+    debugLines.push(ts + '  ' + msg);
+    const panel = document.getElementById('debugPanel');
+    if (panel) {
+        panel.textContent = debugLines.join('\n');
+        panel.scrollTop = panel.scrollHeight;
+        if (debugVisible) panel.style.display = 'block';
+    }
+}
+function toggleDebug() {
+    debugVisible = !debugVisible;
+    const panel = document.getElementById('debugPanel');
+    const btn   = document.getElementById('debugToggle');
+    if (panel) {
+        panel.textContent = debugLines.join('\n');
+        panel.style.display = debugVisible ? 'block' : 'none';
+    }
+    if (btn) btn.textContent = debugVisible ? '🐛 Skjul feilsøking' : '🐛 Vis feilsøking';
+    if (debugVisible) {
+        dbg('--- State dump ---');
+        dbg('Notification in window: ' + ('Notification' in window));
+        dbg('Permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'));
+        dbg('serviceWorker in navigator: ' + ('serviceWorker' in navigator));
+        dbg('swRegistration: ' + (swRegistration ? 'yes (active=' + !!(swRegistration.active) + ')' : 'null'));
+        dbg('SW controller: ' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
+        dbg('display-mode standalone: ' + window.matchMedia('(display-mode: standalone)').matches);
+        dbg('navigator.standalone: ' + navigator.standalone);
+        dbg('protocol: ' + location.protocol);
+        dbg('host: ' + location.host);
+        dbg('userAgent: ' + navigator.userAgent.substring(0, 80));
+        dbg('--- End dump ---');
+    }
+}
+
 // ─── Configuration ──────────────────────────────────────────────────────────
 const GOOGLE_SHEET_ID  = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE';
 const GOOGLE_SHEET_GID = '1316132220';
@@ -319,17 +358,36 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
             .then(reg => {
                 swRegistration = reg;
+                dbg('SW registered. scope=' + reg.scope + ' active=' + !!(reg.active) + ' installing=' + !!(reg.installing));
 
                 reg.addEventListener('updatefound', () => {
                     const w = reg.installing;
                     w.addEventListener('statechange', () => {
+                        dbg('SW state: ' + w.state);
                         if (w.state === 'installed' && navigator.serviceWorker.controller) {
                             showUpdateNotification('En ny versjon er tilgjengelig!');
                         }
                     });
                 });
+
+                // If no active worker yet, wait for it
+                if (!reg.active) {
+                    const worker = reg.installing || reg.waiting;
+                    if (worker) {
+                        worker.addEventListener('statechange', () => {
+                            dbg('SW became: ' + worker.state);
+                            if (worker.state === 'activated') {
+                                swRegistration = reg;
+                                dbg('SW now active - ready for notifications');
+                            }
+                        });
+                    }
+                }
             })
-            .catch(err => console.error('SW registration failed:', err));
+            .catch(err => {
+                dbg('SW REGISTRATION FAILED: ' + err.message);
+                console.error('SW registration failed:', err);
+            });
     });
 
     navigator.serviceWorker.addEventListener('message', event => {
@@ -862,43 +920,16 @@ function dismissInstallPrompt() {
     if (p) p.style.display = 'none';
 }
 
-// ─── Debug helpers ───────────────────────────────────────────────────────────
-let debugVisible = false;
-function dbg(msg) {
-    console.log('[DBG]', msg);
-    const panel = document.getElementById('debugPanel');
-    if (!panel) return;
-    const line = new Date().toLocaleTimeString('no-NO') + '  ' + msg + '\n';
-    panel.textContent += line;
-    panel.scrollTop = panel.scrollHeight;
-    if (debugVisible) panel.style.display = 'block';
-}
-
-function toggleDebug() {
-    debugVisible = !debugVisible;
-    const panel = document.getElementById('debugPanel');
-    const btn   = document.getElementById('debugToggle');
-    if (panel) panel.style.display = debugVisible ? 'block' : 'none';
-    if (btn)   btn.textContent = debugVisible ? '🐛 Skjul feilsøking' : '🐛 Vis feilsøking';
-
-    if (debugVisible) {
-        // Dump current state when opening panel
-        dbg('--- State dump ---');
-        dbg('Notification in window: ' + ('Notification' in window));
-        dbg('Permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'));
-        dbg('serviceWorker in navigator: ' + ('serviceWorker' in navigator));
-        dbg('swRegistration: ' + (swRegistration ? 'yes (active=' + !!(swRegistration.active) + ')' : 'null'));
-        dbg('display-mode standalone: ' + window.matchMedia('(display-mode: standalone)').matches);
-        dbg('navigator.standalone: ' + navigator.standalone);
-        dbg('userAgent: ' + navigator.userAgent.substring(0, 80));
-        dbg('--- End dump ---');
-    }
-}
-
 // ─── Boot ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    dbg('Page loaded. controller=' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
     loadGoogleSheetData();
     setTimeout(showInstallPrompt, 2000);
+    // Log SW state after a short delay to catch async registration
+    setTimeout(() => {
+        dbg('2s check: swRegistration=' + (swRegistration ? 'yes' : 'null') + ' controller=' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
+        if (swRegistration) dbg('SW active=' + !!(swRegistration.active) + ' scope=' + swRegistration.scope);
+    }, 2000);
 });
 </script>
 </body>

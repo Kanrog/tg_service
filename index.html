@@ -610,13 +610,6 @@ function saveNotificationSettings() {
     document.getElementById('shiftStartLeadTime').style.display =
         settings.shiftStartReminder ? 'block' : 'none';
 
-    // If user just enabled a reminder and hasn't granted permission yet, ask immediately
-    const wantsReminders = settings.shiftStartReminder || settings.hourlyReminders;
-    if (wantsReminders && Notification.permission === 'default') {
-        requestNotificationPermission();
-        return; // requestNotificationPermission calls updateNotificationStatus + pushSchedule after grant
-    }
-
     updateNotificationStatus();
     pushScheduleToServiceWorker(settings);
     generateChecklist();
@@ -674,12 +667,9 @@ async function requestNotificationPermission() {
         pushScheduleToServiceWorker(settings);
         generateChecklist();
         loadState();
-    } else {
-        // Uncheck reminder boxes so UI stays consistent with denied permission
-        document.getElementById('shiftStartReminder').checked = false;
-        document.getElementById('hourlyReminders').checked    = false;
-        saveNotificationSettings();
-        showWarning('Varseltillatelse ble avslått. Du kan aktivere det i nettleserinnstillingene.');
+    } else if (perm === 'denied') {
+        showWarning('Varsler er blokkert. Gå til nettleserinnstillinger → Varsler for å aktivere.');
+        updateNotificationStatus();
     }
 }
 
@@ -754,7 +744,13 @@ function updateNotificationStatus() {
     }
 
     if (Notification.permission === 'default') {
-        enableBtn.style.display = 'block';
+        // Show the button only if the user has ticked a reminder option
+        const s = getNotificationSettings();
+        if (s.shiftStartReminder || s.hourlyReminders) {
+            enableBtn.style.display = 'block';
+        } else {
+            enableBtn.style.display = 'none';
+        }
         return;
     }
 

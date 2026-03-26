@@ -254,7 +254,9 @@
             </div>
             <div id="notificationWarning" style="display: none;"></div>
 
-            <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="requestNotificationPermission()">
+            <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="
+                Notification.requestPermission().then(function(perm) { onPermissionResult(perm); });
+            ">
                 Aktiver påminnelser
             </button>
 
@@ -655,12 +657,17 @@ function pushScheduleToServiceWorker(settings) {
     }
 }
 
-async function requestNotificationPermission() {
+function requestNotificationPermission() {
+    // Kept for any legacy calls - routes through the same callback
     if (!('Notification' in window)) {
         showWarning('Din nettleser støtter ikke varsler.');
         return;
     }
-    const perm = await Notification.requestPermission();
+    Notification.requestPermission().then(function(perm) { onPermissionResult(perm); });
+}
+
+function onPermissionResult(perm) {
+    console.log('[Notifications] Permission result:', perm);
     if (perm === 'granted') {
         updateNotificationStatus();
         const settings = getNotificationSettings();
@@ -669,6 +676,10 @@ async function requestNotificationPermission() {
         loadState();
     } else if (perm === 'denied') {
         showWarning('Varsler er blokkert. Gå til nettleserinnstillinger → Varsler for å aktivere.');
+        updateNotificationStatus();
+    } else {
+        // 'default' means dialog was dismissed without choosing
+        showWarning('Du må trykke "Tillat" i dialogboksen for å aktivere varsler.');
         updateNotificationStatus();
     }
 }

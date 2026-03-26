@@ -4,28 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Sjekkliste - The Gathering</title>
-    
-    <!-- PWA Meta Tags -->
     <meta name="description" content="Sjekkliste for service-oppgaver under The Gathering">
     <meta name="theme-color" content="#667eea">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Service Sjekk">
-    
-    <!-- Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
-    <!-- Favicon and Apple Touch Icons -->
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -35,1511 +24,820 @@
             color: #333;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
 
         .login-card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            text-align: center;
+            background: white; border-radius: 15px; padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center;
         }
-
-        .login-card h1 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-
-        .login-card input {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            transition: border-color 0.3s;
-        }
-
-        .login-card input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        .login-card h1 { color: #667eea; margin-bottom: 20px; font-size: 28px; }
 
         .btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 600;
-            width: 100%;
+            background: #667eea; color: white; border: none;
+            padding: 15px 30px; font-size: 16px; border-radius: 10px;
+            cursor: pointer; transition: background 0.3s; font-weight: 600; width: 100%;
         }
-
-        .btn:hover {
-            background: #5568d3;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 14px;
-            margin-left: 10px;
-            width: auto;
-        }
-
-        .btn-success {
-            background: #28a745;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-        }
+        .btn:hover { background: #5568d3; }
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-small { padding: 8px 16px; font-size: 14px; margin-left: 10px; width: auto; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
 
         .header {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 10px;
         }
-
-        .header h1 {
-            color: #667eea;
-            font-size: 24px;
-        }
-
-        .username-display {
-            color: #666;
-            font-size: 16px;
-        }
+        .header h1 { color: #667eea; font-size: 24px; }
 
         .section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: white; border-radius: 15px; padding: 20px;
+            margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
-
         .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 2px solid #667eea; flex-wrap: wrap; gap: 10px;
         }
+        .section-header h2 { color: #667eea; font-size: 20px; }
 
-        .section-header h2 {
-            color: #667eea;
-            font-size: 20px;
-        }
-
-        /* Notification Settings Styles */
-        .settings-group {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .settings-group:last-child {
-            border-bottom: none;
-        }
-
-        .settings-group label {
-            display: block;
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
+        .settings-group { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0; }
+        .settings-group:last-child { border-bottom: none; }
+        .settings-group > label { display: block; font-weight: 600; color: #667eea; margin-bottom: 10px; }
         .settings-group select {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
+            width: 100%; padding: 12px; font-size: 16px;
+            border: 2px solid #e0e0e0; border-radius: 10px; background: white; cursor: pointer;
         }
-
-        .settings-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        .settings-group select:focus { outline: none; border-color: #667eea; }
 
         .checkbox-setting {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            display: flex; align-items: center; padding: 15px;
+            background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;
         }
+        .checkbox-setting input[type="checkbox"] { width: 24px; height: 24px; margin-right: 15px; cursor: pointer; }
+        .checkbox-setting label { cursor: pointer; font-size: 16px; margin: 0; font-weight: normal; color: #333; flex-grow: 1; }
 
-        .checkbox-setting input[type="checkbox"] {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
+        .sub-setting { margin-left: 39px; margin-top: 10px; }
+        .sub-setting select { padding: 8px; font-size: 14px; }
 
-        .checkbox-setting label {
-            cursor: pointer;
-            font-size: 16px;
-            margin: 0;
-            font-weight: normal;
-            color: #333;
-            flex-grow: 1;
-        }
+        .status-display { background: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .status-display p { margin: 5px 0; color: #1976D2; font-size: 14px; }
+        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .warning-box p { margin: 5px 0; color: #856404; font-size: 14px; }
+        .error-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .error-box p { margin: 5px 0; color: #721c24; font-size: 14px; }
 
-        .sub-setting {
-            margin-left: 39px;
-            margin-top: 10px;
-        }
-
-        .sub-setting select {
-            padding: 8px;
-            font-size: 14px;
-        }
-
-        .status-display {
-            background: #e7f3ff;
-            border-left: 4px solid #2196F3;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .status-display p {
-            margin: 5px 0;
-            color: #1976D2;
-            font-size: 14px;
-        }
-
-        .warning-box {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .warning-box p {
-            margin: 5px 0;
-            color: #856404;
-            font-size: 14px;
-        }
-
-        .section ol {
-            margin-left: 20px;
-            color: #333;
-        }
-
-        .section ol li {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-
-        .section h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
+        .section ol { margin-left: 20px; color: #333; }
+        .section ol li { margin: 10px 0; line-height: 1.6; }
+        .section h3 { color: #667eea; margin-bottom: 10px; font-size: 18px; }
 
         .checkbox-item {
-            padding: 15px;
-            margin: 10px 0;
-            background: #f8f9fa;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            transition: background 0.3s;
+            padding: 15px; margin: 10px 0; background: #f8f9fa;
+            border-radius: 10px; display: flex; align-items: center; transition: background 0.3s;
         }
+        .checkbox-item:hover { background: #e9ecef; }
+        .checkbox-item input[type="checkbox"] { width: 24px; height: 24px; margin-right: 15px; cursor: pointer; flex-shrink: 0; }
+        .checkbox-item label { cursor: pointer; font-size: 16px; line-height: 1.5; flex-grow: 1; }
+        .checkbox-item input[type="checkbox"]:checked + label { text-decoration: line-through; color: #999; }
 
-        .checkbox-item:hover {
-            background: #e9ecef;
-        }
+        .reset-all-container { text-align: center; margin: 30px 0; }
 
-        .checkbox-item input[type="checkbox"] {
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .checkbox-item label {
-            cursor: pointer;
-            font-size: 16px;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-
-        .checkbox-item input[type="checkbox"]:checked + label {
-            text-decoration: line-through;
-            color: #999;
-        }
-
-        .reset-all-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .tips-box {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .tips-box h3 {
-            color: #856404;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-
-        .tips-box ul {
-            list-style-position: inside;
-            color: #856404;
-        }
-
-        .tips-box li {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #667eea;
-        }
-
+        .loading { text-align: center; padding: 20px; color: #667eea; }
         .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            border: 4px solid #f3f3f3; border-top: 4px solid #667eea;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            background: #f8d7da;
-            border-left: 5px solid #dc3545;
-            color: #721c24;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
+        .error-message { background: #f8d7da; border-left: 5px solid #dc3545; color: #721c24; padding: 20px; border-radius: 10px; margin: 20px 0; }
 
         .update-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            display: none;
-            z-index: 1000;
-            max-width: 300px;
+            position: fixed; top: 20px; right: 20px; background: #28a745; color: white;
+            padding: 15px 20px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: none; z-index: 1000; max-width: 300px;
         }
-
         .update-notification button {
-            margin-top: 10px;
-            background: white;
-            color: #28a745;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
+            margin-top: 10px; background: white; color: #28a745;
+            border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600;
         }
 
         .offline-indicator {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #ff9800;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: none;
-            z-index: 1000;
-            font-size: 14px;
+            position: fixed; bottom: 20px; left: 20px; background: #ff9800; color: white;
+            padding: 10px 15px; border-radius: 10px; display: none; z-index: 1000; font-size: 14px;
         }
 
+        /* Notification test button area */
+        .test-area { margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; }
+
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 15px;
-            }
-
-            .section {
-                padding: 15px;
-            }
-
-            .login-card {
-                padding: 30px 20px;
-            }
-
-            .update-notification {
-                right: 10px;
-                top: 10px;
-                max-width: calc(100% - 20px);
-            }
+            body { padding: 10px; }
+            .header { padding: 15px; }
+            .section { padding: 15px; }
+            .login-card { padding: 30px 20px; }
+            .update-notification { right: 10px; top: 10px; max-width: calc(100% - 20px); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Loading Screen -->
-        <div id="loginScreen" class="login-card">
-            <h1>🎮 Service Sjekkliste</h1>
-            <p style="color: #666; margin-bottom: 30px;">The Gathering</p>
-            
-            <div id="loadingMessage" class="loading">
-                <div class="loading-spinner"></div>
-                <p>Laster data fra Google Sheet...</p>
-            </div>
-            
-            <div id="errorMessage" class="error-message" style="display: none;">
-                <strong>⚠️ Feil</strong>
-                <p id="errorText"></p>
-            </div>
+<div class="container">
+    <!-- Loading Screen -->
+    <div id="loginScreen" class="login-card">
+        <h1>🎮 Service Sjekkliste</h1>
+        <p style="color: #666; margin-bottom: 30px;">The Gathering</p>
+        <div id="loadingMessage" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Laster data fra Google Sheet...</p>
+        </div>
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <strong>⚠️ Feil</strong>
+            <p id="errorText"></p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <div class="header">
+            <h1>📋 Service Sjekkliste</h1>
+            <button class="btn btn-small btn-secondary" onclick="refreshData()">↻ Oppdater data</button>
         </div>
 
-        <!-- Main App -->
-        <div id="mainApp" style="display: none;">
-            <!-- Header -->
-            <div class="header">
-                <h1>📋 Service Sjekkliste</h1>
-                <button class="btn btn-small btn-secondary" onclick="refreshData()">↻ Oppdater data</button>
+        <!-- Install Prompt -->
+        <div id="installPrompt" class="section" style="display: none;">
+            <div class="section-header"><h2>📱 Installer appen</h2></div>
+            <div class="warning-box">
+                <p><strong>💡 Viktig!</strong></p>
+                <p>For at varsler skal fungere må appen installeres på hjemskjermen din.</p>
             </div>
-
-            <!-- Install Prompt -->
-            <div id="installPrompt" class="section" style="display: none;">
-                <div class="section-header">
-                    <h2>📱 installer appen</h2>
-                </div>
-                
-                <div class="warning-box">
-                    <p><strong>💡 Viktig!</strong></p>
-                    <p>For best opplevelse og for at varsler skal fungere, installer appen på hjemskjermen din.</p>
-                </div>
-
-                <!-- Android Instructions -->
-                <div id="androidInstructions" style="display: none; margin-top: 15px;">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">📱 Android:</h3>
-                    <ol style="margin-left: 20px; line-height: 1.8;">
-                        <li>Trykk på <strong>menyen</strong> (tre prikker) øverst i nettleseren</li>
-                        <li>Velg <strong>"Legg til på startsiden"</strong> eller <strong>"Installer app"</strong></li>
-                        <li>Trykk <strong>"Installer"</strong> eller <strong>"Legg til"</strong></li>
-                    </ol>
-                    <button id="androidInstallBtn" class="btn" style="margin-top: 15px; display: none;" onclick="triggerInstallPrompt()">
-                        📲 Installer app nå
-                    </button>
-                </div>
-
-                <!-- iOS Instructions -->
-                <div id="iosInstructions" style="display: none; margin-top: 15px;">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">📱 iPhone/iPad:</h3>
-                    <ol style="margin-left: 20px; line-height: 1.8;">
-                        <li>Åpne denne siden i <strong>Safari</strong> (ikke Chrome eller annen nettleser)</li>
-                        <li>Trykk på <strong>Del-knappen</strong> (firkant med pil opp) nederst</li>
-                        <li>Scroll ned og velg <strong>"Legg til på Hjem-skjerm"</strong></li>
-                        <li>Trykk <strong>"Legg til"</strong></li>
-                    </ol>
-                    <p style="margin-top: 10px; color: #856404; font-size: 14px;">
-                        ⚠️ <strong>Viktig for iOS:</strong> Varsler fungerer kun når appen er lagt til på hjemskjermen!
-                    </p>
-                </div>
-
-                <button class="btn btn-secondary" style="margin-top: 15px;" onclick="dismissInstallPrompt()">
-                    Jeg har allerede installert appen
+            <div id="androidInstructions" style="display: none; margin-top: 15px;">
+                <h3>📱 Android:</h3>
+                <ol>
+                    <li>Trykk på <strong>menyen</strong> (tre prikker) øverst i nettleseren</li>
+                    <li>Velg <strong>"Legg til på startsiden"</strong> eller <strong>"Installer app"</strong></li>
+                    <li>Trykk <strong>"Installer"</strong></li>
+                </ol>
+                <button id="androidInstallBtn" class="btn" style="margin-top: 15px; display: none;" onclick="triggerInstallPrompt()">
+                    📲 Installer app nå
                 </button>
             </div>
-
-            <!-- Notification Settings -->
-            <div class="section">
-                <div class="section-header">
-                    <h2>🔔 Påminnelser</h2>
-                    <button class="btn btn-small btn-danger" onclick="disableAllNotifications()">Skru av alle varsler</button>
-                </div>
-
-                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
-                    💡 <strong>Tips:</strong> Fjern avkryssing for å stoppe varsler. Bruk "Skru av alle varsler" for å deaktivere alt på en gang.
+            <div id="iosInstructions" style="display: none; margin-top: 15px;">
+                <h3>📱 iPhone/iPad:</h3>
+                <ol>
+                    <li>Åpne denne siden i <strong>Safari</strong></li>
+                    <li>Trykk på <strong>Del-knappen</strong> (firkant med pil opp) nederst</li>
+                    <li>Velg <strong>"Legg til på Hjem-skjerm"</strong></li>
+                    <li>Trykk <strong>"Legg til"</strong></li>
+                </ol>
+                <p style="margin-top: 10px; color: #856404; font-size: 14px;">
+                    ⚠️ Krever iOS 16.4+ og at appen er lagt til på hjemskjermen.
                 </p>
+            </div>
+            <button class="btn btn-secondary" style="margin-top: 15px;" onclick="dismissInstallPrompt()">
+                Jeg har allerede installert appen
+            </button>
+        </div>
 
-                <div class="settings-group">
-                    <label for="shiftSelect">Mitt skift:</label>
-                    <select id="shiftSelect" onchange="saveNotificationSettings()">
-                        <option value="">Velg skift...</option>
-                        <option value="day">Dag (08:00-16:00)</option>
-                        <option value="evening">Kveld (16:00-00:00)</option>
-                        <option value="night">Natt (00:00-08:00)</option>
+        <!-- Notification Settings -->
+        <div class="section">
+            <div class="section-header">
+                <h2>🔔 Påminnelser</h2>
+                <button class="btn btn-small btn-danger" onclick="disableAllNotifications()">Skru av alle varsler</button>
+            </div>
+
+            <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                💡 Varsler sendes av appen selv når den er installert – de fungerer selv om du låser skjermen.
+            </p>
+
+            <div class="settings-group">
+                <label for="shiftSelect">Mitt skift:</label>
+                <select id="shiftSelect" onchange="saveNotificationSettings()">
+                    <option value="">Velg skift...</option>
+                    <option value="day">Dag (08:00–16:00)</option>
+                    <option value="evening">Kveld (16:00–00:00)</option>
+                    <option value="night">Natt (00:00–08:00)</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <div class="checkbox-setting">
+                    <input type="checkbox" id="shiftStartReminder" onchange="saveNotificationSettings()">
+                    <label for="shiftStartReminder">Påminn meg før skiftet starter</label>
+                </div>
+                <div class="sub-setting" id="shiftStartLeadTime" style="display: none;">
+                    <select id="shiftStartMinutes" onchange="saveNotificationSettings()">
+                        <option value="15">15 minutter før</option>
+                        <option value="30">30 minutter før</option>
+                        <option value="60">60 minutter før</option>
                     </select>
                 </div>
-
-                <div class="settings-group">
-                    <div class="checkbox-setting">
-                        <input type="checkbox" id="shiftStartReminder" onchange="saveNotificationSettings()">
-                        <label for="shiftStartReminder">Påminn meg før skiftet starter</label>
-                    </div>
-                    
-                    <div class="sub-setting" id="shiftStartLeadTime" style="display: none;">
-                        <select id="shiftStartMinutes" onchange="saveNotificationSettings()">
-                            <option value="15">15 minutter før</option>
-                            <option value="30">30 minutter før</option>
-                            <option value="60">60 minutter før</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="settings-group">
-                    <div class="checkbox-setting">
-                        <input type="checkbox" id="hourlyReminders" onchange="saveNotificationSettings()">
-                        <label for="hourlyReminders">Timebaserte oppgavepåminnelser</label>
-                    </div>
-                    <p style="margin-left: 39px; margin-top: 5px; font-size: 14px; color: #666;">
-                        Får påminnelser 10 min før hver time med oppgaver som skal gjøres
-                    </p>
-                </div>
-
-                <div id="notificationStatus" class="status-display" style="display: none;">
-                    <p><strong>Status:</strong></p>
-                    <p id="statusText"></p>
-                    <p id="nextReminderText"></p>
-                </div>
-
-                <div id="notificationWarning" class="warning-box" style="display: none;">
-                    <p><strong>⚠️ OBS:</strong></p>
-                    <p id="warningText"></p>
-                </div>
-
-                <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="requestNotificationPermission()">
-                    Aktiver påminnelser
-                </button>
             </div>
 
-            <!-- Checklist Container -->
-            <div id="checklistContainer"></div>
+            <div class="settings-group">
+                <div class="checkbox-setting">
+                    <input type="checkbox" id="hourlyReminders" onchange="saveNotificationSettings()">
+                    <label for="hourlyReminders">Timebaserte oppgavepåminnelser</label>
+                </div>
+                <p style="margin-left: 39px; margin-top: 5px; font-size: 14px; color: #666;">
+                    Varsler 10 min før hver time med planlagte oppgaver
+                </p>
+            </div>
 
-            <!-- Reset All Button -->
-            <div class="reset-all-container">
-                <button class="btn btn-danger" onclick="resetAll()">Reset alle avkrysninger</button>
+            <!-- Status / warnings -->
+            <div id="notificationStatus" class="status-display" style="display: none;">
+                <p><strong>Status:</strong></p>
+                <p id="statusText"></p>
+                <p id="nextReminderText"></p>
+            </div>
+            <div id="notificationWarning" style="display: none;"></div>
+
+            <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="requestNotificationPermission()">
+                Aktiver påminnelser
+            </button>
+
+            <!-- Test button (visible only after permission granted) -->
+            <div id="testArea" class="test-area" style="display: none;">
+                <button class="btn btn-success btn-small" onclick="sendTestNotification()">
+                    🔔 Send testvarsel nå
+                </button>
+                <span id="testResult" style="margin-left: 10px; font-size: 13px; color: #666;"></span>
             </div>
         </div>
+
+        <!-- Checklist Container -->
+        <div id="checklistContainer"></div>
+
+        <!-- Reset All -->
+        <div class="reset-all-container">
+            <button class="btn btn-danger" onclick="resetAll()">Reset alle avkrysninger</button>
+        </div>
     </div>
+</div>
 
-    <!-- Update Notification -->
-    <div id="updateNotification" class="update-notification">
-        <strong>📱 Oppdatering tilgjengelig</strong>
-        <p id="updateMessage"></p>
-        <button onclick="reloadPage()">Oppdater nå</button>
-    </div>
+<!-- Update Notification -->
+<div id="updateNotification" class="update-notification">
+    <strong>📱 Oppdatering tilgjengelig</strong>
+    <p id="updateMessage"></p>
+    <button onclick="reloadPage()">Oppdater nå</button>
+</div>
 
-    <!-- Offline Indicator -->
-    <div id="offlineIndicator" class="offline-indicator">
-        📡 Offline-modus
-    </div>
+<!-- Offline Indicator -->
+<div id="offlineIndicator" class="offline-indicator">📡 Offline-modus</div>
 
-    <script>
-        // Configuration
-        const GOOGLE_SHEET_ID = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE';
-        const GOOGLE_SHEET_GID = '1316132220';
+<script>
+// ─── Configuration ──────────────────────────────────────────────────────────
+const GOOGLE_SHEET_ID  = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE';
+const GOOGLE_SHEET_GID = '1316132220';
 
-        // State
-        let checklistData = [];
-        let notificationInterval = null;
-        let shiftStartTimeout = null;
-        let deferredInstallPrompt = null;
+const SHIFTS = {
+    day:     { name: 'Dag',   start: '08:00', end: '16:00' },
+    evening: { name: 'Kveld', start: '16:00', end: '00:00' },
+    night:   { name: 'Natt',  start: '00:00', end: '08:00' }
+};
 
-        // Shift configurations
-        const SHIFTS = {
-            day: { name: 'Dag', start: '08:00', end: '16:00', column: 'Day Time' },
-            evening: { name: 'Kveld', start: '16:00', end: '00:00', column: 'Evening Time' },
-            night: { name: 'Natt', start: '00:00', end: '08:00', column: 'Night Time' }
-        };
+let checklistData        = [];
+let swRegistration       = null;
+let deferredInstallPrompt = null;
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration);
-                        
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    showUpdateNotification('En ny versjon er tilgjengelig!');
-                                }
-                            });
-                        });
-                    })
-                    .catch(error => {
-                        console.log('Service Worker registration failed:', error);
+// ─── Service Worker registration ────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => {
+                swRegistration = reg;
+
+                reg.addEventListener('updatefound', () => {
+                    const w = reg.installing;
+                    w.addEventListener('statechange', () => {
+                        if (w.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateNotification('En ny versjon er tilgjengelig!');
+                        }
                     });
-            });
+                });
+            })
+            .catch(err => console.error('SW registration failed:', err));
+    });
 
-            navigator.serviceWorker.addEventListener('message', (event) => {
-                if (event.data && event.data.type === 'DATA_UPDATED') {
-                    showUpdateNotification(event.data.message);
-                }
-            });
+    navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data && event.data.type === 'DATA_UPDATED') {
+            showUpdateNotification(event.data.message);
         }
+    });
+}
 
-        // Network status monitoring
-        window.addEventListener('online', () => {
-            const offlineIndicator = document.getElementById('offlineIndicator');
-            if (offlineIndicator) offlineIndicator.style.display = 'none';
-            loadGoogleSheetData(true);
-        });
+// ─── Network status ──────────────────────────────────────────────────────────
+window.addEventListener('online', () => {
+    document.getElementById('offlineIndicator').style.display = 'none';
+    loadGoogleSheetData(true);
+});
+window.addEventListener('offline', () => {
+    document.getElementById('offlineIndicator').style.display = 'block';
+});
 
-        window.addEventListener('offline', () => {
-            const offlineIndicator = document.getElementById('offlineIndicator');
-            if (offlineIndicator) offlineIndicator.style.display = 'block';
-        });
+function showUpdateNotification(msg) {
+    const n = document.getElementById('updateNotification');
+    const m = document.getElementById('updateMessage');
+    if (m) m.textContent = msg;
+    if (n) { n.style.display = 'block'; setTimeout(() => n.style.display = 'none', 10000); }
+}
+function reloadPage() { window.location.reload(); }
 
-        // Show update notification
-        function showUpdateNotification(message) {
-            const notification = document.getElementById('updateNotification');
-            const messageEl = document.getElementById('updateMessage');
-            
-            if (messageEl) messageEl.textContent = message;
-            if (notification) {
-                notification.style.display = 'block';
-                
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 10000);
-            }
+// ─── Data loading ────────────────────────────────────────────────────────────
+async function loadGoogleSheetData(silent = false) {
+    try {
+        if (!silent) {
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
         }
-
-        // Reload page to get fresh data
-        function reloadPage() {
-            window.location.reload();
-        }
-
-        // Load data from Google Sheet
-        async function loadGoogleSheetData(silent = false) {
-            try {
-                if (!silent) {
-                    document.getElementById('loadingMessage').style.display = 'block';
-                    document.getElementById('errorMessage').style.display = 'none';
-                }
-
-                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=${GOOGLE_SHEET_GID}`;
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const csvText = await response.text();
-                parseCSV(csvText);
-                
-            } catch (error) {
-                console.error('Error loading Google Sheet:', error);
-                
-                const cachedData = localStorage.getItem('crewcare_checklist');
-                if (cachedData) {
-                    console.log('Loading from cached data');
-                    checklistData = JSON.parse(cachedData);
-                    
-                    if (!silent) {
-                        document.getElementById('loginScreen').style.display = 'none';
-                        document.getElementById('mainApp').style.display = 'block';
-                    }
-                    
-                    generateChecklist();
-                    loadState();
-                    loadNotificationSettings();
-                    
-                    if (!navigator.onLine) {
-                        document.getElementById('offlineIndicator').style.display = 'block';
-                    }
-                } else if (!silent) {
-                    showError('Kunne ikke laste data fra Google Sheet. Sjekk internett-tilkoblingen din.');
-                }
-            }
-        }
-
-        function parseCSV(csvText) {
-            const lines = csvText.split('\n').filter(line => line.trim());
-            
-            if (lines.length < 2) {
-                showError('Google Sheet må inneholde minst en header rad og én data rad');
-                return;
-            }
-
-            checklistData = [];
-            
-            // Parse header to find column indices
-            const headerLine = lines[0];
-            const headers = parseCSVLine(headerLine).map(h => h.toLowerCase());
-            
-            console.log('Parsed headers:', headers);
-            
-            const enabledIdx = headers.findIndex(h => h === 'enabled');
-            const categoryIdx = headers.findIndex(h => h === 'category');
-            const taskIdx = headers.findIndex(h => h === 'task');
-            const dayTimeIdx = headers.findIndex(h => h === 'day time');
-            const eveningTimeIdx = headers.findIndex(h => h === 'evening time');
-            const nightTimeIdx = headers.findIndex(h => h === 'night time');
-            const intervalIdx = headers.findIndex(h => h === 'interval');
-
-            console.log('Column indices:', { enabledIdx, categoryIdx, taskIdx, dayTimeIdx, eveningTimeIdx, nightTimeIdx, intervalIdx });
-
-            if (enabledIdx === -1 || categoryIdx === -1 || taskIdx === -1) {
-                showError('Google Sheet må inneholde kolonnene: Enabled, Category, Task');
-                return;
-            }
-
-            // Parse data rows
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line) {
-                    const fields = parseCSVLine(line);
-                    
-                    const enabled = fields[enabledIdx]?.toUpperCase() === 'TRUE';
-                    const category = fields[categoryIdx] || '';
-                    const task = fields[taskIdx] || '';
-                    const dayTime = normalizeTime(fields[dayTimeIdx] || '');
-                    const eveningTime = normalizeTime(fields[eveningTimeIdx] || '');
-                    const nightTime = normalizeTime(fields[nightTimeIdx] || '');
-                    const intervalStr = fields[intervalIdx] || '';
-                    const interval = intervalStr ? parseInt(intervalStr, 10) : null;
-                    
-                    if (category && task) {
-                        checklistData.push({
-                            enabled,
-                            category,
-                            task,
-                            dayTime,
-                            eveningTime,
-                            nightTime,
-                            interval
-                        });
-                    }
-                }
-            }
-
-            if (checklistData.length === 0) {
-                showError('Ingen gyldige sjekklistepunkter funnet i Google Sheet');
-                return;
-            }
-
-            localStorage.setItem('crewcare_checklist', JSON.stringify(checklistData));
-
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
+        const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=${GOOGLE_SHEET_GID}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        parseCSV(await response.text());
+    } catch (err) {
+        console.error('Error loading sheet:', err);
+        const cached = localStorage.getItem('crewcare_checklist');
+        if (cached) {
+            checklistData = JSON.parse(cached);
+            if (!silent) showMainApp();
             generateChecklist();
             loadState();
             loadNotificationSettings();
-            
-            console.log(`Loaded ${checklistData.length} items from Google Sheet`);
+            if (!navigator.onLine) document.getElementById('offlineIndicator').style.display = 'block';
+        } else if (!silent) {
+            showError('Kunne ikke laste data fra Google Sheet. Sjekk internett-tilkoblingen din.');
         }
-
-        function parseCSVLine(line) {
-            const fields = [];
-            let field = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                const nextChar = i < line.length - 1 ? line[i + 1] : null;
-                
-                if (char === '"') {
-                    // Handle escaped quotes ("")
-                    if (nextChar === '"' && inQuotes) {
-                        field += '"';
-                        i++; // Skip next quote
-                    } else {
-                        inQuotes = !inQuotes;
-                    }
-                } else if (char === ',' && !inQuotes) {
-                    fields.push(field.trim());
-                    field = '';
-                } else {
-                    field += char;
-                }
-            }
-            // Push the last field
-            fields.push(field.trim());
-            
-            return fields;
-        }
-
-        // Normalize time format from "8:00" or "8:0" to "08:00"
-        function normalizeTime(timeStr) {
-            if (!timeStr || !timeStr.trim()) return '';
-            
-            const cleaned = timeStr.trim();
-            const parts = cleaned.split(':');
-            
-            if (parts.length !== 2) return cleaned;
-            
-            const hours = parts[0].padStart(2, '0');
-            const minutes = parts[1].padStart(2, '0');
-            
-            return `${hours}:${minutes}`;
-        }
-
-        function showError(message) {
-            document.getElementById('errorText').textContent = message;
-            document.getElementById('errorMessage').style.display = 'block';
-            document.getElementById('loadingMessage').style.display = 'none';
-        }
-
-        function generateChecklist() {
-            const container = document.getElementById('checklistContainer');
-            container.innerHTML = '';
-
-            function hashCode(str) {
-                let hash = 0;
-                for (let i = 0; i < str.length; i++) {
-                    const char = str.charCodeAt(i);
-                    hash = ((hash << 5) - hash) + char;
-                    hash = hash & hash;
-                }
-                return Math.abs(hash).toString(36);
-            }
-
-            // Get selected shift
-            const settings = getNotificationSettings();
-            const selectedShift = settings.shift;
-
-            if (!selectedShift) {
-                // No shift selected - show message
-                container.innerHTML = `
-                    <div class="section">
-                        <p style="text-align: center; color: #666; padding: 40px 20px;">
-                            👆 Velg ditt skift i påminnelser-seksjonen over for å se sjekklisten din
-                        </p>
-                    </div>
-                `;
-                return;
-            }
-
-            const shift = SHIFTS[selectedShift];
-            const [shiftStartHour] = shift.start.split(':').map(Number);
-            const [shiftEndHour] = shift.end.split(':').map(Number);
-
-            // Build time-based structure
-            const tasksByTime = {};
-
-            checklistData.forEach(item => {
-                if (!item.enabled) return;
-
-                // Get time for this shift
-                let taskTime = '';
-                if (selectedShift === 'day') taskTime = item.dayTime;
-                else if (selectedShift === 'evening') taskTime = item.eveningTime;
-                else if (selectedShift === 'night') taskTime = item.nightTime;
-
-                // Handle time-specific tasks
-                if (taskTime) {
-                    if (!tasksByTime[taskTime]) {
-                        tasksByTime[taskTime] = [];
-                    }
-                    tasksByTime[taskTime].push(item);
-                }
-
-                // Handle interval tasks
-                if (item.interval && item.interval > 0) {
-                    // Calculate all hours this interval task should appear
-                    let currentHour = shiftStartHour;
-                    const maxIterations = 24; // Safety limit
-                    let iterations = 0;
-
-                    while (iterations < maxIterations) {
-                        const timeString = `${String(currentHour).padStart(2, '0')}:00`;
-                        
-                        if (!tasksByTime[timeString]) {
-                            tasksByTime[timeString] = [];
-                        }
-                        
-                        // Check if this task is already in this time slot (avoid duplicates)
-                        const isDuplicate = tasksByTime[timeString].some(t => 
-                            t.task === item.task && t.category === item.category
-                        );
-                        
-                        if (!isDuplicate) {
-                            tasksByTime[timeString].push({
-                                ...item,
-                                isInterval: true,
-                                intervalDisplay: `(hver ${item.interval}. time)`
-                            });
-                        }
-
-                        currentHour += item.interval;
-                        
-                        // Handle shift end and overnight shifts
-                        if (shiftEndHour > shiftStartHour) {
-                            if (currentHour >= shiftEndHour) break;
-                        } else {
-                            // Overnight shift
-                            if (currentHour >= 24) {
-                                currentHour -= 24;
-                            }
-                            if (currentHour >= shiftEndHour && currentHour < shiftStartHour) break;
-                        }
-                        
-                        iterations++;
-                    }
-                }
-            });
-
-            // Sort times
-            const sortedTimes = Object.keys(tasksByTime).sort((a, b) => {
-                const [aHour, aMin] = a.split(':').map(Number);
-                const [bHour, bMin] = b.split(':').map(Number);
-                
-                // Handle overnight shifts
-                let aTime = aHour * 60 + aMin;
-                let bTime = bHour * 60 + bMin;
-                
-                if (shiftEndHour < shiftStartHour) {
-                    // Overnight shift - adjust times after midnight
-                    if (aHour < shiftStartHour) aTime += 24 * 60;
-                    if (bHour < shiftStartHour) bTime += 24 * 60;
-                }
-                
-                return aTime - bTime;
-            });
-
-            if (sortedTimes.length === 0) {
-                container.innerHTML = `
-                    <div class="section">
-                        <p style="text-align: center; color: #666; padding: 40px 20px;">
-                            Ingen oppgaver planlagt for ${shift.name}-skift
-                        </p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Generate HTML for each time
-            sortedTimes.forEach((time, index) => {
-                const sectionId = `section-${index}`;
-                const tasks = tasksByTime[time];
-                
-                let tasksHTML = '';
-                tasks.forEach((item) => {
-                    const taskId = 'task-' + hashCode(item.category + item.task + time);
-                    const displayText = item.isInterval 
-                        ? `${item.task} ${item.intervalDisplay}`
-                        : item.task;
-                    
-                    tasksHTML += `
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="${taskId}" onchange="saveState()">
-                            <label for="${taskId}">${displayText}</label>
-                        </div>
-                    `;
-                });
-                
-                const sectionHTML = `
-                    <div class="section" id="${sectionId}">
-                        <div class="section-header">
-                            <h2>⏰ ${time}</h2>
-                            <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
-                        </div>
-                        ${tasksHTML}
-                    </div>
-                `;
-                container.innerHTML += sectionHTML;
-            });
-        }
-
-        function refreshData() {
-            if (confirm('Dette vil laste data på nytt fra Google Sheet. Fortsett?')) {
-                document.getElementById('mainApp').style.display = 'none';
-                document.getElementById('loginScreen').style.display = 'block';
-                document.getElementById('loadingMessage').style.display = 'block';
-                loadGoogleSheetData();
-            }
-        }
-
-        function saveState() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            const state = {};
-            
-            checkboxes.forEach(checkbox => {
-                state[checkbox.id] = checkbox.checked;
-            });
-
-            localStorage.setItem('crewcare_state', JSON.stringify(state));
-        }
-
-        function loadState() {
-            const savedState = localStorage.getItem('crewcare_state');
-            
-            if (savedState) {
-                const state = JSON.parse(savedState);
-                Object.keys(state).forEach(id => {
-                    const checkbox = document.getElementById(id);
-                    if (checkbox) {
-                        checkbox.checked = state[id];
-                    }
-                });
-            }
-        }
-
-        function resetSection(sectionId) {
-            if (confirm('Er du sikker på at du vil resette denne seksjonen?')) {
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-                    checkboxes.forEach(checkbox => {
-                        checkbox.checked = false;
-                    });
-                    saveState();
-                }
-            }
-        }
-
-        function resetAll() {
-            if (confirm('Er du sikker på at du vil resette ALLE avkryssingene?')) {
-                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                saveState();
-            }
-        }
-
-        // ====== NOTIFICATION SYSTEM ======
-
-        function saveNotificationSettings() {
-            const settings = {
-                shift: document.getElementById('shiftSelect').value,
-                shiftStartReminder: document.getElementById('shiftStartReminder').checked,
-                shiftStartMinutes: document.getElementById('shiftStartMinutes').value,
-                hourlyReminders: document.getElementById('hourlyReminders').checked
-            };
-
-            localStorage.setItem('notification_settings', JSON.stringify(settings));
-            
-            // Show/hide sub-settings
-            document.getElementById('shiftStartLeadTime').style.display = 
-                settings.shiftStartReminder ? 'block' : 'none';
-
-            updateNotificationStatus();
-            setupNotifications();
-            
-            // Regenerate checklist when shift changes
-            generateChecklist();
-            loadState();
-        }
-
-        function disableAllNotifications() {
-            if (confirm('Er du sikker på at du vil skru av alle varsler?')) {
-                // Uncheck all checkboxes
-                document.getElementById('shiftStartReminder').checked = false;
-                document.getElementById('hourlyReminders').checked = false;
-                
-                // Optionally clear shift selection
-                // document.getElementById('shiftSelect').value = '';
-                
-                // Save and update
-                saveNotificationSettings();
-                
-                // Show feedback
-                alert('✓ Alle varsler er skrudd av');
-            }
-        }
-
-        function loadNotificationSettings() {
-            const saved = localStorage.getItem('notification_settings');
-            
-            if (saved) {
-                const settings = JSON.parse(saved);
-                document.getElementById('shiftSelect').value = settings.shift || '';
-                document.getElementById('shiftStartReminder').checked = settings.shiftStartReminder || false;
-                document.getElementById('shiftStartMinutes').value = settings.shiftStartMinutes || '15';
-                document.getElementById('hourlyReminders').checked = settings.hourlyReminders || false;
-                
-                document.getElementById('shiftStartLeadTime').style.display = 
-                    settings.shiftStartReminder ? 'block' : 'none';
-            }
-
-            updateNotificationStatus();
-            setupNotifications();
-        }
-
-        async function requestNotificationPermission() {
-            if (!('Notification' in window)) {
-                alert('Din nettleser støtter ikke varsler');
-                return;
-            }
-
-            const permission = await Notification.requestPermission();
-            
-            if (permission === 'granted') {
-                updateNotificationStatus();
-                setupNotifications();
-            } else {
-                alert('Du må gi tillatelse til varsler for at påminnelser skal fungere');
-            }
-        }
-
-        function updateNotificationStatus() {
-            const settings = getNotificationSettings();
-            const statusDiv = document.getElementById('notificationStatus');
-            const warningDiv = document.getElementById('notificationWarning');
-            const enableBtn = document.getElementById('enableNotificationsBtn');
-            const statusText = document.getElementById('statusText');
-            const nextReminderText = document.getElementById('nextReminderText');
-            const warningText = document.getElementById('warningText');
-
-            // Check if notifications are supported
-            if (!('Notification' in window)) {
-                warningDiv.style.display = 'block';
-                warningText.textContent = 'Din nettleser støtter ikke varsler';
-                statusDiv.style.display = 'none';
-                enableBtn.style.display = 'none';
-                return;
-            }
-
-            // Check notification permission
-            if (Notification.permission === 'default') {
-                enableBtn.style.display = 'block';
-                statusDiv.style.display = 'none';
-                warningDiv.style.display = 'none';
-                return;
-            }
-
-            if (Notification.permission === 'denied') {
-                warningDiv.style.display = 'block';
-                warningText.textContent = 'Varsler er blokkert. Gå til nettleserinnstillinger for å aktivere.';
-                statusDiv.style.display = 'none';
-                enableBtn.style.display = 'none';
-                return;
-            }
-
-            enableBtn.style.display = 'none';
-
-            // Check if shift is selected
-            if (!settings.shift) {
-                statusDiv.style.display = 'none';
-                warningDiv.style.display = 'block';
-                warningText.textContent = 'Velg et skift for å aktivere påminnelser';
-                return;
-            }
-
-            // Check if any reminders are enabled
-            if (!settings.shiftStartReminder && !settings.hourlyReminders) {
-                statusDiv.style.display = 'block';
-                warningDiv.style.display = 'none';
-                statusText.textContent = '⭕ Varsler er skrudd AV';
-                statusText.style.color = '#dc3545';
-                nextReminderText.textContent = 'Kryss av en varseltype for å aktivere';
-                nextReminderText.style.color = '#6c757d';
-                return;
-            }
-
-            // Show status
-            warningDiv.style.display = 'none';
-            statusDiv.style.display = 'block';
-            
-            const shiftName = SHIFTS[settings.shift].name;
-            let statusParts = [];
-            
-            if (settings.shiftStartReminder) {
-                statusParts.push(`Skiftstart (${settings.shiftStartMinutes} min før)`);
-            }
-            if (settings.hourlyReminders) {
-                statusParts.push('Timebaserte oppgaver');
-            }
-            
-            statusText.textContent = `✅ Påminnelser aktive for ${shiftName}-skift: ${statusParts.join(', ')}`;
-            statusText.style.color = '#1976D2';
-            
-            // Calculate next reminder
-            const nextReminder = getNextReminderTime(settings);
-            if (nextReminder) {
-                const timeString = nextReminder.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-                nextReminderText.textContent = `Neste påminnelse: ${timeString}`;
-                nextReminderText.style.color = '#1976D2';
-            } else {
-                nextReminderText.textContent = 'Ingen planlagte påminnelser for øyeblikket';
-                nextReminderText.style.color = '#6c757d';
-            }
-
-            // Check if running as PWA (iOS requirement)
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                window.navigator.standalone === true;
-            
-            if (!isStandalone && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                warningDiv.style.display = 'block';
-                warningText.textContent = 'På iOS må du legge til appen på hjemskjermen for at varsler skal fungere';
-            }
-        }
-
-        function getNotificationSettings() {
-            const saved = localStorage.getItem('notification_settings');
-            return saved ? JSON.parse(saved) : {
-                shift: '',
-                shiftStartReminder: false,
-                shiftStartMinutes: '15',
-                hourlyReminders: false
-            };
-        }
-
-        function getNextReminderTime(settings) {
-            if (!settings.shift) return null;
-
-            const now = new Date();
-            const shift = SHIFTS[settings.shift];
-            
-            // Parse shift start time
-            const [startHour, startMinute] = shift.start.split(':').map(Number);
-            const shiftStart = new Date(now);
-            shiftStart.setHours(startHour, startMinute, 0, 0);
-
-            // If shift start is in the past today, set to tomorrow
-            if (shiftStart < now) {
-                shiftStart.setDate(shiftStart.getDate() + 1);
-            }
-
-            let nextReminder = null;
-
-            // Check shift start reminder
-            if (settings.shiftStartReminder) {
-                const reminderTime = new Date(shiftStart.getTime() - settings.shiftStartMinutes * 60000);
-                if (reminderTime > now && (!nextReminder || reminderTime < nextReminder)) {
-                    nextReminder = reminderTime;
-                }
-            }
-
-            // Check hourly reminders
-            if (settings.hourlyReminders && isWithinShift(now, settings.shift)) {
-                const nextHour = new Date(now);
-                nextHour.setMinutes(50, 0, 0); // 10 minutes before next hour
-                
-                if (nextHour < now) {
-                    nextHour.setHours(nextHour.getHours() + 1);
-                }
-
-                if (!nextReminder || nextHour < nextReminder) {
-                    nextReminder = nextHour;
-                }
-            }
-
-            return nextReminder;
-        }
-
-        function isWithinShift(time, shiftName) {
-            const shift = SHIFTS[shiftName];
-            const [startHour, startMinute] = shift.start.split(':').map(Number);
-            const [endHour, endMinute] = shift.end.split(':').map(Number);
-            
-            const currentMinutes = time.getHours() * 60 + time.getMinutes();
-            const startMinutes = startHour * 60 + startMinute;
-            let endMinutes = endHour * 60 + endMinute;
-            
-            // Handle overnight shifts
-            if (endMinutes <= startMinutes) {
-                endMinutes += 24 * 60;
-                if (currentMinutes < startMinutes) {
-                    return currentMinutes + 24 * 60 < endMinutes;
-                }
-            }
-            
-            return currentMinutes >= startMinutes && currentMinutes < endMinutes;
-        }
-
-        function setupNotifications() {
-            // Clear existing timers
-            if (notificationInterval) {
-                clearInterval(notificationInterval);
-                notificationInterval = null;
-            }
-            if (shiftStartTimeout) {
-                clearTimeout(shiftStartTimeout);
-                shiftStartTimeout = null;
-            }
-
-            const settings = getNotificationSettings();
-            
-            if (Notification.permission !== 'granted' || !settings.shift) {
-                return;
-            }
-
-            // Setup shift start reminder
-            if (settings.shiftStartReminder) {
-                scheduleShiftStartReminder(settings);
-            }
-
-            // Setup hourly reminders
-            if (settings.hourlyReminders) {
-                scheduleHourlyReminders(settings);
-            }
-        }
-
-        function scheduleShiftStartReminder(settings) {
-            const now = new Date();
-            const shift = SHIFTS[settings.shift];
-            const [startHour, startMinute] = shift.start.split(':').map(Number);
-            
-            const shiftStart = new Date(now);
-            shiftStart.setHours(startHour, startMinute, 0, 0);
-            
-            if (shiftStart < now) {
-                shiftStart.setDate(shiftStart.getDate() + 1);
-            }
-
-            const reminderTime = new Date(shiftStart.getTime() - settings.shiftStartMinutes * 60000);
-            const timeUntilReminder = reminderTime.getTime() - now.getTime();
-
-            if (timeUntilReminder > 0) {
-                shiftStartTimeout = setTimeout(() => {
-                    showNotification(
-                        'Skiftet ditt starter snart!',
-                        `${shift.name}-skift starter om ${settings.shiftStartMinutes} minutter`
-                    );
-                    // Schedule next day's reminder
-                    scheduleShiftStartReminder(settings);
-                }, timeUntilReminder);
-            }
-        }
-
-        function scheduleHourlyReminders(settings) {
-            // Check every minute for tasks
-            notificationInterval = setInterval(() => {
-                const now = new Date();
-                
-                if (!isWithinShift(now, settings.shift)) {
-                    return; // Not in shift, skip
-                }
-                
-                // Calculate time 10 minutes from now
-                const targetTime = new Date(now.getTime() + 10 * 60000);
-                
-                const tasks = getTasksForTime(targetTime, settings.shift);
-                
-                if (tasks.length > 0) {
-                    const timeString = targetTime.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-                    const taskList = tasks.map(t => `• ${t.task}`).join('\n');
-                    
-                    showNotification(
-                        `Oppgaver kl ${timeString}`,
-                        taskList
-                    );
-                }
-            }, 60000); // Check every minute
-        }
-
-        function getTasksForTime(time, shiftName) {
-            const shift = SHIFTS[shiftName];
-            const timeString = time.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-            
-            // Get shift start time for interval calculation
-            const [shiftStartHour, shiftStartMinute] = shift.start.split(':').map(Number);
-            const taskHour = time.getHours();
-            const taskMinute = time.getMinutes();
-            
-            // For interval tasks, only trigger on exact hours (XX:00)
-            if (taskMinute === 0) {
-                // Calculate hours since shift start for interval-based tasks
-                let hoursSinceShiftStart;
-                if (shiftName === 'night' && taskHour >= shiftStartHour) {
-                    hoursSinceShiftStart = taskHour - shiftStartHour;
-                } else if (shiftName === 'night' && taskHour < shiftStartHour) {
-                    hoursSinceShiftStart = (24 - shiftStartHour) + taskHour;
-                } else if (shiftName === 'evening' && taskHour < shiftStartHour) {
-                    hoursSinceShiftStart = (24 - shiftStartHour) + taskHour;
-                } else {
-                    hoursSinceShiftStart = taskHour - shiftStartHour;
-                }
-                
-                // Get interval-based tasks
-                const intervalTasks = checklistData.filter(item => {
-                    if (!item.enabled) return false;
-                    if (!item.interval || item.interval <= 0) return false;
-                    return hoursSinceShiftStart % item.interval === 0;
-                });
-                
-                // Get time-specific tasks for this exact time
-                const timeTasks = checklistData.filter(item => {
-                    if (!item.enabled) return false;
-                    if (item.interval && item.interval > 0) return false; // Skip interval tasks
-                    
-                    let taskTime = '';
-                    if (shiftName === 'day') taskTime = item.dayTime;
-                    else if (shiftName === 'evening') taskTime = item.eveningTime;
-                    else if (shiftName === 'night') taskTime = item.nightTime;
-                    
-                    return taskTime && taskTime.trim() === timeString;
-                });
-                
-                return [...intervalTasks, ...timeTasks];
-            } else {
-                // Not on the hour - only check time-specific tasks
-                return checklistData.filter(item => {
-                    if (!item.enabled) return false;
-                    if (item.interval && item.interval > 0) return false; // Skip interval tasks
-                    
-                    let taskTime = '';
-                    if (shiftName === 'day') taskTime = item.dayTime;
-                    else if (shiftName === 'evening') taskTime = item.eveningTime;
-                    else if (shiftName === 'night') taskTime = item.nightTime;
-                    
-                    return taskTime && taskTime.trim() === timeString;
-                });
-            }
-        }
-
-        function showNotification(title, body) {
-            if (Notification.permission === 'granted') {
-                const notification = new Notification(title, {
-                    body: body,
-                    icon: '/icons/icon-192x192.png',
-                    badge: '/icons/icon-72x72.png',
-                    tag: 'service-reminder',
-                    requireInteraction: true
-                });
-
-                notification.onclick = function() {
-                    window.focus();
-                    notification.close();
-                };
-            }
-        }
-
-        // ====== INSTALL PROMPT HANDLING ======
-
-        // Capture the install prompt event (Android)
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            
-            // Show the Android install button
-            const androidBtn = document.getElementById('androidInstallBtn');
-            if (androidBtn) androidBtn.style.display = 'block';
+    }
+}
+
+function parseCSV(csvText) {
+    const lines = csvText.split('\n').filter(l => l.trim());
+    if (lines.length < 2) { showError('Google Sheet mangler data'); return; }
+
+    const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+    const idx = {
+        enabled:     headers.findIndex(h => h === 'enabled'),
+        category:    headers.findIndex(h => h === 'category'),
+        task:        headers.findIndex(h => h === 'task'),
+        dayTime:     headers.findIndex(h => h === 'day time'),
+        eveningTime: headers.findIndex(h => h === 'evening time'),
+        nightTime:   headers.findIndex(h => h === 'night time'),
+        interval:    headers.findIndex(h => h === 'interval')
+    };
+
+    if (idx.enabled === -1 || idx.category === -1 || idx.task === -1) {
+        showError('Google Sheet må inneholde kolonnene: Enabled, Category, Task');
+        return;
+    }
+
+    checklistData = [];
+    for (let i = 1; i < lines.length; i++) {
+        const f = parseCSVLine(lines[i].trim());
+        const enabled  = (f[idx.enabled] || '').toUpperCase() === 'TRUE';
+        const category = f[idx.category] || '';
+        const task     = f[idx.task] || '';
+        if (!category || !task) continue;
+        checklistData.push({
+            enabled,
+            category,
+            task,
+            dayTime:     normalizeTime(f[idx.dayTime]     || ''),
+            eveningTime: normalizeTime(f[idx.eveningTime] || ''),
+            nightTime:   normalizeTime(f[idx.nightTime]   || ''),
+            interval:    idx.interval >= 0 && f[idx.interval] ? parseInt(f[idx.interval], 10) : null
         });
+    }
 
-        // Check if app is installed
-        function isAppInstalled() {
-            // Check if running as standalone app
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                window.navigator.standalone === true;
-            
-            // Check if user has dismissed the prompt before
-            const dismissed = localStorage.getItem('install_prompt_dismissed');
-            
-            return isStandalone || dismissed === 'true';
+    if (checklistData.length === 0) { showError('Ingen gyldige sjekklistepunkter funnet'); return; }
+    localStorage.setItem('crewcare_checklist', JSON.stringify(checklistData));
+    showMainApp();
+    generateChecklist();
+    loadState();
+    loadNotificationSettings();
+}
+
+function parseCSVLine(line) {
+    const fields = [];
+    let field = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+        const c = line[i], n = line[i + 1];
+        if (c === '"') { if (n === '"' && inQ) { field += '"'; i++; } else inQ = !inQ; }
+        else if (c === ',' && !inQ) { fields.push(field.trim()); field = ''; }
+        else field += c;
+    }
+    fields.push(field.trim());
+    return fields;
+}
+
+function normalizeTime(s) {
+    if (!s || !s.trim()) return '';
+    const parts = s.trim().split(':');
+    if (parts.length !== 2) return s.trim();
+    return parts[0].padStart(2, '0') + ':' + parts[1].padStart(2, '0');
+}
+
+function showError(msg) {
+    document.getElementById('errorText').textContent = msg;
+    document.getElementById('errorMessage').style.display = 'block';
+    document.getElementById('loadingMessage').style.display = 'none';
+}
+
+function showMainApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+}
+
+// ─── Checklist rendering ─────────────────────────────────────────────────────
+function hashCode(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h = h & h; }
+    return Math.abs(h).toString(36);
+}
+
+function generateChecklist() {
+    const container = document.getElementById('checklistContainer');
+    container.innerHTML = '';
+
+    const settings     = getNotificationSettings();
+    const selectedShift = settings.shift;
+
+    if (!selectedShift) {
+        container.innerHTML = `
+            <div class="section">
+                <p style="text-align:center;color:#666;padding:40px 20px;">
+                    👆 Velg ditt skift i påminnelser-seksjonen over for å se sjekklisten din
+                </p>
+            </div>`;
+        return;
+    }
+
+    const shift = SHIFTS[selectedShift];
+    const [shiftStartHour] = shift.start.split(':').map(Number);
+    const [shiftEndHour]   = shift.end.split(':').map(Number);
+    const tasksByTime = {};
+
+    checklistData.forEach(item => {
+        if (!item.enabled) return;
+        let taskTime = selectedShift === 'day' ? item.dayTime
+                     : selectedShift === 'evening' ? item.eveningTime
+                     : item.nightTime;
+
+        if (taskTime && !item.interval) {
+            if (!tasksByTime[taskTime]) tasksByTime[taskTime] = [];
+            tasksByTime[taskTime].push(item);
         }
 
-        // Show install instructions based on device
-        function showInstallPrompt() {
-            if (isAppInstalled()) {
-                return; // Already installed or dismissed
+        if (item.interval && item.interval > 0) {
+            let h = shiftStartHour;
+            for (let iter = 0; iter < 48; iter++) {
+                const t = `${String(h).padStart(2,'0')}:00`;
+                if (!tasksByTime[t]) tasksByTime[t] = [];
+                if (!tasksByTime[t].some(x => x.task === item.task)) {
+                    tasksByTime[t].push({ ...item, isInterval: true, intervalDisplay: `(hver ${item.interval}. time)` });
+                }
+                h += item.interval;
+                if (shiftEndHour > shiftStartHour) { if (h >= shiftEndHour) break; }
+                else { if (h >= 24) h -= 24; if (h >= shiftEndHour && h < shiftStartHour) break; }
             }
-
-            const installPrompt = document.getElementById('installPrompt');
-            const androidInstructions = document.getElementById('androidInstructions');
-            const iosInstructions = document.getElementById('iosInstructions');
-            
-            if (!installPrompt) return;
-
-            // Detect device type
-            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-            const isAndroid = /Android/.test(navigator.userAgent);
-            
-            if (isIOS) {
-                iosInstructions.style.display = 'block';
-                androidInstructions.style.display = 'none';
-            } else if (isAndroid) {
-                androidInstructions.style.display = 'block';
-                iosInstructions.style.display = 'none';
-            } else {
-                // Desktop or other - show both
-                androidInstructions.style.display = 'block';
-                iosInstructions.style.display = 'block';
-            }
-            
-            installPrompt.style.display = 'block';
         }
+    });
 
-        // Trigger install prompt (Android)
-        async function triggerInstallPrompt() {
-            if (!deferredInstallPrompt) {
-                alert('Installasjons-funksjonen er ikke tilgjengelig. Bruk nettlesermenyen for å installere.');
-                return;
-            }
-
-            deferredInstallPrompt.prompt();
-            const { outcome } = await deferredInstallPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-                dismissInstallPrompt();
-            }
-            
-            deferredInstallPrompt = null;
+    const sortedTimes = Object.keys(tasksByTime).sort((a, b) => {
+        let [ah, am] = a.split(':').map(Number);
+        let [bh, bm] = b.split(':').map(Number);
+        let at = ah * 60 + am, bt = bh * 60 + bm;
+        if (shiftEndHour < shiftStartHour) {
+            if (ah < shiftStartHour) at += 1440;
+            if (bh < shiftStartHour) bt += 1440;
         }
+        return at - bt;
+    });
 
-        // Dismiss install prompt
-        function dismissInstallPrompt() {
-            localStorage.setItem('install_prompt_dismissed', 'true');
-            const installPrompt = document.getElementById('installPrompt');
-            if (installPrompt) installPrompt.style.display = 'none';
-        }
+    if (sortedTimes.length === 0) {
+        container.innerHTML = `<div class="section"><p style="text-align:center;color:#666;padding:40px 20px;">Ingen oppgaver planlagt for ${shift.name}-skift</p></div>`;
+        return;
+    }
 
-        // Load data on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGoogleSheetData();
-            
-            // Show install prompt after a short delay
-            setTimeout(() => {
-                showInstallPrompt();
-            }, 2000);
+    sortedTimes.forEach((time, index) => {
+        const sectionId = `section-${index}`;
+        let tasksHTML = '';
+        tasksByTime[time].forEach(item => {
+            const taskId     = 'task-' + hashCode(item.category + item.task + time);
+            const displayText = item.isInterval ? `${item.task} ${item.intervalDisplay}` : item.task;
+            tasksHTML += `
+                <div class="checkbox-item">
+                    <input type="checkbox" id="${taskId}" onchange="saveState()">
+                    <label for="${taskId}">${displayText}</label>
+                </div>`;
         });
-    </script>
+        container.innerHTML += `
+            <div class="section" id="${sectionId}">
+                <div class="section-header">
+                    <h2>⏰ ${time}</h2>
+                    <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
+                </div>
+                ${tasksHTML}
+            </div>`;
+    });
+}
+
+function refreshData() {
+    if (confirm('Dette vil laste data på nytt fra Google Sheet. Fortsett?')) {
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'block';
+        document.getElementById('loadingMessage').style.display = 'block';
+        loadGoogleSheetData();
+    }
+}
+
+function saveState() {
+    const state = {};
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => { state[cb.id] = cb.checked; });
+    localStorage.setItem('crewcare_state', JSON.stringify(state));
+}
+
+function loadState() {
+    const saved = localStorage.getItem('crewcare_state');
+    if (!saved) return;
+    const state = JSON.parse(saved);
+    Object.keys(state).forEach(id => {
+        const cb = document.getElementById(id);
+        if (cb) cb.checked = state[id];
+    });
+}
+
+function resetSection(sectionId) {
+    if (!confirm('Er du sikker på at du vil resette denne seksjonen?')) return;
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        saveState();
+    }
+}
+
+function resetAll() {
+    if (!confirm('Er du sikker på at du vil resette ALLE avkryssingene?')) return;
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    saveState();
+}
+
+// ─── Notification system ─────────────────────────────────────────────────────
+//
+// Key design: the page never calls new Notification() directly.
+// Instead it sends a SCHEDULE_NOTIFICATIONS message to the service worker,
+// which uses setTimeout chains to call self.registration.showNotification().
+// This works when the screen is locked and on Android background tabs.
+// On iOS it requires the app to be installed to the home screen (iOS 16.4+).
+//
+
+function getNotificationSettings() {
+    const saved = localStorage.getItem('notification_settings');
+    return saved ? JSON.parse(saved) : {
+        shift: '', shiftStartReminder: false, shiftStartMinutes: '15', hourlyReminders: false
+    };
+}
+
+function saveNotificationSettings() {
+    const settings = {
+        shift:              document.getElementById('shiftSelect').value,
+        shiftStartReminder: document.getElementById('shiftStartReminder').checked,
+        shiftStartMinutes:  document.getElementById('shiftStartMinutes').value,
+        hourlyReminders:    document.getElementById('hourlyReminders').checked
+    };
+    localStorage.setItem('notification_settings', JSON.stringify(settings));
+    document.getElementById('shiftStartLeadTime').style.display =
+        settings.shiftStartReminder ? 'block' : 'none';
+
+    updateNotificationStatus();
+    pushScheduleToServiceWorker(settings);
+    generateChecklist();
+    loadState();
+}
+
+function loadNotificationSettings() {
+    const s = getNotificationSettings();
+    document.getElementById('shiftSelect').value        = s.shift || '';
+    document.getElementById('shiftStartReminder').checked = s.shiftStartReminder || false;
+    document.getElementById('shiftStartMinutes').value  = s.shiftStartMinutes || '15';
+    document.getElementById('hourlyReminders').checked  = s.hourlyReminders || false;
+    document.getElementById('shiftStartLeadTime').style.display =
+        s.shiftStartReminder ? 'block' : 'none';
+    updateNotificationStatus();
+    // Only push to SW if permission already granted
+    if (Notification.permission === 'granted') {
+        pushScheduleToServiceWorker(s);
+    }
+}
+
+// Send the full task list + settings to the service worker for scheduling
+function pushScheduleToServiceWorker(settings) {
+    if (!('serviceWorker' in navigator)) return;
+    if (Notification.permission !== 'granted') return;
+
+    const doSend = (sw) => {
+        sw.postMessage({
+            type: 'SCHEDULE_NOTIFICATIONS',
+            settings,
+            tasks: checklistData,
+            shifts: SHIFTS
+        });
+    };
+
+    if (swRegistration && swRegistration.active) {
+        doSend(swRegistration.active);
+    } else {
+        navigator.serviceWorker.ready.then(reg => {
+            swRegistration = reg;
+            if (reg.active) doSend(reg.active);
+        });
+    }
+}
+
+async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        showWarning('Din nettleser støtter ikke varsler.');
+        return;
+    }
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+        updateNotificationStatus();
+        const settings = getNotificationSettings();
+        pushScheduleToServiceWorker(settings);
+    } else {
+        showWarning('Du må gi tillatelse til varsler for at påminnelser skal fungere.');
+    }
+}
+
+function disableAllNotifications() {
+    if (!confirm('Er du sikker på at du vil skru av alle varsler?')) return;
+    document.getElementById('shiftStartReminder').checked = false;
+    document.getElementById('hourlyReminders').checked    = false;
+    saveNotificationSettings();
+    // Tell SW to clear all scheduled timeouts
+    if (swRegistration && swRegistration.active) {
+        swRegistration.active.postMessage({ type: 'CLEAR_NOTIFICATIONS' });
+    }
+    alert('✓ Alle varsler er skrudd av');
+}
+
+function sendTestNotification() {
+    const result = document.getElementById('testResult');
+    if (!('serviceWorker' in navigator) || !swRegistration) {
+        result.textContent = '⚠️ Service worker ikke klar – prøv igjen om et sekund.';
+        return;
+    }
+    if (Notification.permission !== 'granted') {
+        result.textContent = '⚠️ Tillatelse ikke gitt.';
+        return;
+    }
+    swRegistration.active
+        ? swRegistration.active.postMessage({ type: 'TEST_NOTIFICATION' })
+        : navigator.serviceWorker.ready.then(r => r.active.postMessage({ type: 'TEST_NOTIFICATION' }));
+
+    // The SW doesn't handle TEST_NOTIFICATION yet – fire directly from registration
+    swRegistration.showNotification('🔔 Testvarsel', {
+        body: 'Varsler fungerer! Du vil motta påminnelser fra appen.',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-72x72.png',
+        tag: 'test',
+        requireInteraction: false
+    }).then(() => {
+        result.textContent = '✅ Sendt!';
+        setTimeout(() => result.textContent = '', 3000);
+    }).catch(err => {
+        result.textContent = `⚠️ Feil: ${err.message}`;
+    });
+}
+
+function updateNotificationStatus() {
+    const statusDiv  = document.getElementById('notificationStatus');
+    const warningDiv = document.getElementById('notificationWarning');
+    const enableBtn  = document.getElementById('enableNotificationsBtn');
+    const testArea   = document.getElementById('testArea');
+    const statusText = document.getElementById('statusText');
+    const nextText   = document.getElementById('nextReminderText');
+
+    warningDiv.innerHTML = '';
+    warningDiv.style.display = 'none';
+    statusDiv.style.display  = 'none';
+    enableBtn.style.display  = 'none';
+    testArea.style.display   = 'none';
+
+    if (!('Notification' in window)) {
+        renderWarning(warningDiv, 'error', 'Din nettleser støtter ikke push-varsler.');
+        return;
+    }
+
+    // iOS check
+    const isIOS        = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+    if (isIOS && !isStandalone) {
+        renderWarning(warningDiv, 'warning',
+            'På iPhone/iPad må du <strong>installere appen på hjemskjermen</strong> for at varsler skal fungere (krever iOS 16.4+).');
+        return;
+    }
+
+    if (Notification.permission === 'default') {
+        enableBtn.style.display = 'block';
+        return;
+    }
+
+    if (Notification.permission === 'denied') {
+        renderWarning(warningDiv, 'error',
+            'Varsler er blokkert i nettleserinnstillingene. Gå til nettleserinnstillinger → Personvern → Varsler for å aktivere.');
+        return;
+    }
+
+    // Permission granted
+    testArea.style.display = 'block';
+
+    const settings = getNotificationSettings();
+
+    if (!settings.shift) {
+        renderWarning(warningDiv, 'warning', 'Velg et skift for å aktivere påminnelser.');
+        return;
+    }
+
+    if (!settings.shiftStartReminder && !settings.hourlyReminders) {
+        statusDiv.style.display = 'block';
+        statusText.textContent  = '⭕ Varsler er skrudd AV – kryss av en varseltype for å aktivere';
+        statusText.style.color  = '#dc3545';
+        nextText.textContent    = '';
+        return;
+    }
+
+    statusDiv.style.display = 'block';
+    const shiftName  = SHIFTS[settings.shift].name;
+    const parts      = [];
+    if (settings.shiftStartReminder) parts.push(`skiftstart (${settings.shiftStartMinutes} min før)`);
+    if (settings.hourlyReminders)    parts.push('timebaserte oppgaver');
+    statusText.textContent = `✅ Påminnelser aktive for ${shiftName}-skift: ${parts.join(', ')}`;
+    statusText.style.color = '#1976D2';
+    nextText.textContent   = 'Varsler sendes av service worker – fungerer selv med låst skjerm.';
+    nextText.style.color   = '#1976D2';
+}
+
+function renderWarning(div, type, html) {
+    const cls = type === 'error' ? 'error-box' : 'warning-box';
+    div.innerHTML  = `<div class="${cls}"><p>${html}</p></div>`;
+    div.style.display = 'block';
+}
+
+function showWarning(msg) {
+    const d = document.getElementById('notificationWarning');
+    renderWarning(d, 'warning', msg);
+}
+
+// ─── Install prompt ──────────────────────────────────────────────────────────
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    const btn = document.getElementById('androidInstallBtn');
+    if (btn) btn.style.display = 'block';
+});
+
+function isAppInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches
+        || navigator.standalone === true
+        || localStorage.getItem('install_prompt_dismissed') === 'true';
+}
+
+function showInstallPrompt() {
+    if (isAppInstalled()) return;
+    const prompt       = document.getElementById('installPrompt');
+    const androidInstr = document.getElementById('androidInstructions');
+    const iosInstr     = document.getElementById('iosInstructions');
+    if (!prompt) return;
+    const isIOS     = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    if (isIOS)          { iosInstr.style.display = 'block'; }
+    else if (isAndroid) { androidInstr.style.display = 'block'; }
+    else                { androidInstr.style.display = 'block'; iosInstr.style.display = 'block'; }
+    prompt.style.display = 'block';
+}
+
+async function triggerInstallPrompt() {
+    if (!deferredInstallPrompt) { alert('Bruk nettlesermenyen for å installere.'); return; }
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    if (outcome === 'accepted') dismissInstallPrompt();
+    deferredInstallPrompt = null;
+}
+
+function dismissInstallPrompt() {
+    localStorage.setItem('install_prompt_dismissed', 'true');
+    const p = document.getElementById('installPrompt');
+    if (p) p.style.display = 'none';
+}
+
+// ─── Boot ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    loadGoogleSheetData();
+    setTimeout(showInstallPrompt, 2000);
+});
+</script>
 </body>
 </html>

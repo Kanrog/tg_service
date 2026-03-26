@@ -136,8 +136,8 @@ function scheduleTimeout(fn, delayMs) {
 function fireNotification(title, body, tag) {
   self.registration.showNotification(title, {
     body,
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
+    icon: './icons/icon-192x192.png',
+    badge: './icons/icon-72x72.png',
     tag: tag || 'service-reminder',
     requireInteraction: true,
     renotify: true

@@ -255,10 +255,19 @@
             <div id="notificationWarning" style="display: none;"></div>
 
             <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="
-                Notification.requestPermission().then(function(perm) { onPermissionResult(perm); });
+                dbg('Button tapped. Notification in window: ' + ('Notification' in window) + ', permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'));
+                if (!('Notification' in window)) { dbg('ERROR: Notification API not available'); return; }
+                dbg('Calling requestPermission...');
+                try {
+                    Notification.requestPermission().then(function(perm) { dbg('Permission result: ' + perm); onPermissionResult(perm); });
+                } catch(e) { dbg('EXCEPTION: ' + e.message); }
             ">
                 Aktiver påminnelser
             </button>
+
+            <!-- Debug panel -->
+            <div id="debugPanel" style="margin-top:15px; padding:12px; background:#1e1e1e; color:#00ff88; border-radius:8px; font-family:monospace; font-size:12px; display:none; max-height:200px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;"></div>
+            <button id="debugToggle" class="btn btn-secondary btn-small" style="margin-top:8px;" onclick="toggleDebug()">🐛 Vis feilsøking</button>
 
             <!-- Test button (visible only after permission granted) -->
             <div id="testArea" class="test-area" style="display: none;">
@@ -851,6 +860,39 @@ function dismissInstallPrompt() {
     localStorage.setItem('install_prompt_dismissed', 'true');
     const p = document.getElementById('installPrompt');
     if (p) p.style.display = 'none';
+}
+
+// ─── Debug helpers ───────────────────────────────────────────────────────────
+let debugVisible = false;
+function dbg(msg) {
+    console.log('[DBG]', msg);
+    const panel = document.getElementById('debugPanel');
+    if (!panel) return;
+    const line = new Date().toLocaleTimeString('no-NO') + '  ' + msg + '\n';
+    panel.textContent += line;
+    panel.scrollTop = panel.scrollHeight;
+    if (debugVisible) panel.style.display = 'block';
+}
+
+function toggleDebug() {
+    debugVisible = !debugVisible;
+    const panel = document.getElementById('debugPanel');
+    const btn   = document.getElementById('debugToggle');
+    if (panel) panel.style.display = debugVisible ? 'block' : 'none';
+    if (btn)   btn.textContent = debugVisible ? '🐛 Skjul feilsøking' : '🐛 Vis feilsøking';
+
+    if (debugVisible) {
+        // Dump current state when opening panel
+        dbg('--- State dump ---');
+        dbg('Notification in window: ' + ('Notification' in window));
+        dbg('Permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'));
+        dbg('serviceWorker in navigator: ' + ('serviceWorker' in navigator));
+        dbg('swRegistration: ' + (swRegistration ? 'yes (active=' + !!(swRegistration.active) + ')' : 'null'));
+        dbg('display-mode standalone: ' + window.matchMedia('(display-mode: standalone)').matches);
+        dbg('navigator.standalone: ' + navigator.standalone);
+        dbg('userAgent: ' + navigator.userAgent.substring(0, 80));
+        dbg('--- End dump ---');
+    }
 }
 
 // ─── Boot ────────────────────────────────────────────────────────────────────

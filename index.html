@@ -708,7 +708,7 @@ function loadNotificationSettings() {
 // Send the full task list + settings to the service worker for scheduling
 // ── Web Push subscription ────────────────────────────────────────────────
 // The Cloudflare Worker URL - update this after deploying your Worker
-let WORKER_URL = localStorage.getItem('worker_url') || '';
+let WORKER_URL = localStorage.getItem('worker_url') || 'https://tg-service-notifications.marsto87.workers.dev';
 
 async function getVapidPublicKey() {
     if (!WORKER_URL) return null;

@@ -267,7 +267,11 @@
 
             <!-- Debug panel -->
             <div id="debugPanel" style="margin-top:15px; padding:12px; background:#1e1e1e; color:#00ff88; border-radius:8px; font-family:monospace; font-size:12px; display:none; max-height:200px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;"></div>
-            <button id="debugToggle" class="btn btn-secondary btn-small" style="margin-top:8px;" onclick="toggleDebug()">🐛 Vis feilsøking</button>
+            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button id="debugToggle" class="btn btn-secondary btn-small" onclick="toggleDebug()">🐛 Vis feilsøking</button>
+                <button class="btn btn-small" style="background:#764ba2;" onclick="forceReschedule()">↺ Tving ny planlegging</button>
+                <button class="btn btn-small" style="background:#764ba2;" onclick="forceTestIn10s()">⏱ Testvarsel om 10 sek</button>
+            </div>
 
             <!-- Test button (visible only after permission granted) -->
             <div id="testArea" class="test-area" style="display: none;">
@@ -763,6 +767,35 @@ function disableAllNotifications() {
     alert('✓ Alle varsler er skrudd av');
 }
 
+function forceReschedule() {
+    if (Notification.permission !== 'granted') { dbg('Permission not granted'); return; }
+    navigator.serviceWorker.ready.then(reg => {
+        swRegistration = reg;
+        const settings = getNotificationSettings();
+        dbg('Force reschedule: shift=' + settings.shift + ' hourly=' + settings.hourlyReminders + ' tasks=' + checklistData.length);
+        pushScheduleToServiceWorker(settings);
+        dbg('Message sent to SW');
+    });
+}
+
+function forceTestIn10s() {
+    if (!swRegistration) { dbg('No SW registration'); return; }
+    dbg('Scheduling test notification via SW in 10 seconds...');
+    // We schedule it via a fake task message with a slot 10 seconds from now
+    const now = new Date();
+    now.setSeconds(now.getSeconds() + 20); // 20s from now = notify 10s before a "task" at +20s
+    const fakeTime = now.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+    if (swRegistration.active) {
+        swRegistration.active.postMessage({
+            type: 'SCHEDULE_NOTIFICATIONS',
+            settings: { ...getNotificationSettings(), hourlyReminders: true },
+            tasks: [{ enabled: true, category: 'Test', task: 'Dette er et testvarsel', dayTime: fakeTime, eveningTime: fakeTime, nightTime: fakeTime, interval: null }],
+            shifts: SHIFTS
+        });
+        dbg('Sent fake task at ' + fakeTime + ' - you should get a notification shortly');
+    }
+}
+
 function sendTestNotification() {
     const result = document.getElementById('testResult');
     if (!('serviceWorker' in navigator) || !swRegistration) {
@@ -925,7 +958,15 @@ document.addEventListener('DOMContentLoaded', () => {
     dbg('Page loaded. controller=' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
     loadGoogleSheetData();
     setTimeout(showInstallPrompt, 2000);
-    // Log SW state after a short delay to catch async registration
+    // Reschedule on every page load in case SW was restarted and lost its timeouts
+    if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(reg => {
+            swRegistration = reg;
+            const settings = getNotificationSettings();
+            dbg('Page load reschedule: shift=' + settings.shift + ' hourly=' + settings.hourlyReminders + ' tasks=' + checklistData.length);
+            pushScheduleToServiceWorker(settings);
+        });
+    }
     setTimeout(() => {
         dbg('2s check: swRegistration=' + (swRegistration ? 'yes' : 'null') + ' controller=' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
         if (swRegistration) dbg('SW active=' + !!(swRegistration.active) + ' scope=' + swRegistration.scope);

@@ -97,20 +97,15 @@ self.addEventListener('notificationclick', (event) => {
 
 // ─── Notification scheduling ───────────────────────────────────────────────
 //
-// The page sends a SCHEDULE_NOTIFICATIONS message with the full task list and
-// settings. The SW stores them and uses setTimeout chains to fire at the right
-// times. This works even when the page tab is closed or the screen is locked
-// (on Android; iOS requires PWA installed to home screen, iOS 16.4+).
+// Strategy: store the full schedule in SW state (lastSchedule). On each
+// SCHEDULE_NOTIFICATIONS message, rebuild all timeouts. Also re-check every
+// minute via a keepalive interval so that if the SW was restarted and timeouts
+// were lost, they get rescheduled automatically from stored state.
 //
-// Message format from page:
-// {
-//   type: 'SCHEDULE_NOTIFICATIONS',
-//   settings: { shift, shiftStartReminder, shiftStartMinutes, hourlyReminders },
-//   tasks: [{ category, task, dayTime, eveningTime, nightTime, enabled, interval }],
-//   shifts: { day: { start, end }, evening: { start, end }, night: { start, end } }
-// }
 
 let scheduledTimeouts = [];
+let lastSchedule = null;  // { settings, tasks, shifts } - persists in SW memory
+let keepaliveInterval = null;
 
 function clearAllTimeouts() {
   scheduledTimeouts.forEach(id => clearTimeout(id));
@@ -118,23 +113,16 @@ function clearAllTimeouts() {
 }
 
 function scheduleTimeout(fn, delayMs) {
-  // Split into chunks to work around the ~24.8-day 32-bit int limit
-  // and to avoid browser throttling of very long timeouts.
-  const MAX_DELAY = 30 * 60 * 1000; // 30 minutes max per chunk
-  if (delayMs <= 0) return;
-  if (delayMs <= MAX_DELAY) {
-    const id = setTimeout(fn, delayMs);
-    scheduledTimeouts.push(id);
-  } else {
-    const id = setTimeout(() => {
-      scheduleTimeout(fn, delayMs - MAX_DELAY);
-    }, MAX_DELAY);
-    scheduledTimeouts.push(id);
-  }
+  if (delayMs <= 0) { fn(); return; }
+  // Chrome throttles SW timeouts aggressively beyond a few minutes.
+  // We work around this by storing the schedule and re-checking every minute.
+  const id = setTimeout(fn, delayMs);
+  scheduledTimeouts.push(id);
 }
 
 function fireNotification(title, body, tag) {
-  self.registration.showNotification(title, {
+  console.log('[SW] Firing notification:', title, tag);
+  return self.registration.showNotification(title, {
     body,
     icon: './icons/icon-192x192.png',
     badge: './icons/icon-72x72.png',
@@ -145,7 +133,6 @@ function fireNotification(title, body, tag) {
 }
 
 function parseTime(str) {
-  // Returns { hours, minutes } from "08:00" or "8:0"
   const [h, m] = (str || '').split(':').map(Number);
   return { hours: h || 0, minutes: m || 0 };
 }
@@ -162,111 +149,116 @@ function msUntil(date) {
   return Math.max(0, date.getTime() - Date.now());
 }
 
-function buildSchedule(settings, tasks, shifts) {
-  clearAllTimeouts();
-
-  if (!settings.shift) return;
-
+function buildTasksByTime(settings, tasks, shifts) {
   const shift = shifts[settings.shift];
-  if (!shift) return;
-
   const shiftStart = parseTime(shift.start);
   const shiftEnd   = parseTime(shift.end);
+  const tasksByTime = {};
 
-  // ── 1. Shift-start reminder ──────────────────────────────────────────────
+  const addTask = (timeStr, label) => {
+    if (!timeStr) return;
+    if (!tasksByTime[timeStr]) tasksByTime[timeStr] = [];
+    if (!tasksByTime[timeStr].includes(label)) tasksByTime[timeStr].push(label);
+  };
+
+  tasks.forEach(item => {
+    if (!item.enabled) return;
+    let taskTime = '';
+    if (settings.shift === 'day')     taskTime = item.dayTime;
+    if (settings.shift === 'evening') taskTime = item.eveningTime;
+    if (settings.shift === 'night')   taskTime = item.nightTime;
+
+    if (taskTime && !item.interval) addTask(taskTime, item.task);
+
+    if (item.interval && item.interval > 0) {
+      let h = shiftStart.hours;
+      for (let i = 0; i < 48; i++) {
+        addTask(`${String(h).padStart(2,'0')}:00`, `${item.task} (hver ${item.interval}. time)`);
+        h += item.interval;
+        if (shiftEnd.hours > shiftStart.hours) {
+          if (h >= shiftEnd.hours) break;
+        } else {
+          if (h >= 24) h -= 24;
+          if (h >= shiftEnd.hours && h < shiftStart.hours) break;
+        }
+      }
+    }
+  });
+
+  return tasksByTime;
+}
+
+function buildSchedule(settings, tasks, shifts) {
+  clearAllTimeouts();
+  if (!settings.shift) { console.log('[SW] No shift selected, skipping schedule'); return; }
+  const shift = shifts[settings.shift];
+  if (!shift) { console.log('[SW] Unknown shift:', settings.shift); return; }
+
+  console.log('[SW] Building schedule for shift:', settings.shift, 'time now:', new Date().toLocaleTimeString());
+
+  const shiftStart = parseTime(shift.start);
+  let scheduledCount = 0;
+
+  // ── 1. Shift-start reminder ────────────────────────────────────────────
   if (settings.shiftStartReminder) {
     const leadMin = parseInt(settings.shiftStartMinutes, 10) || 15;
     const startDate = nextOccurrenceOfTime(shiftStart.hours, shiftStart.minutes);
     const reminderDate = new Date(startDate.getTime() - leadMin * 60 * 1000);
     const delay = msUntil(reminderDate);
-
+    console.log('[SW] Shift-start reminder in', Math.round(delay/60000), 'min at', reminderDate.toLocaleTimeString());
     if (delay > 0) {
       scheduleTimeout(() => {
         fireNotification(
           'Skiftet ditt starter snart!',
-          `${shiftStart.hours.toString().padStart(2,'0')}:${shiftStart.minutes.toString().padStart(2,'0')}-skiftet starter om ${leadMin} minutter`,
+          `Skiftet starter om ${leadMin} minutter (kl ${String(shiftStart.hours).padStart(2,'0')}:${String(shiftStart.minutes).padStart(2,'0')})`,
           'shift-start'
         );
-        // Re-schedule for next day
-        buildSchedule(settings, tasks, shifts);
+        if (lastSchedule) buildSchedule(lastSchedule.settings, lastSchedule.tasks, lastSchedule.shifts);
       }, delay);
+      scheduledCount++;
     }
   }
 
-  // ── 2. Hourly task reminders ─────────────────────────────────────────────
+  // ── 2. Hourly task reminders ───────────────────────────────────────────
   if (settings.hourlyReminders) {
-    // Build a map of time → [task names] for this shift
-    const tasksByTime = {};
-
-    const addTask = (timeStr, label) => {
-      if (!timeStr) return;
-      if (!tasksByTime[timeStr]) tasksByTime[timeStr] = [];
-      tasksByTime[timeStr].push(label);
-    };
-
-    tasks.forEach(item => {
-      if (!item.enabled) return;
-
-      // Time-specific tasks
-      let taskTime = '';
-      if (settings.shift === 'day')     taskTime = item.dayTime;
-      if (settings.shift === 'evening') taskTime = item.eveningTime;
-      if (settings.shift === 'night')   taskTime = item.nightTime;
-
-      if (taskTime && !item.interval) {
-        addTask(taskTime, item.task);
-      }
-
-      // Interval tasks: enumerate every occurrence during the shift
-      if (item.interval && item.interval > 0) {
-        let h = shiftStart.hours;
-        const maxIter = 48;
-        for (let i = 0; i < maxIter; i++) {
-          const t = `${String(h).padStart(2,'0')}:00`;
-          addTask(t, `${item.task} (hver ${item.interval}. time)`);
-          h += item.interval;
-          // Check if we've passed the shift end
-          if (shiftEnd.hours > shiftStart.hours) {
-            if (h >= shiftEnd.hours) break;
-          } else {
-            // Overnight
-            if (h >= 24) h -= 24;
-            if (h >= shiftEnd.hours && h < shiftStart.hours) break;
-          }
-        }
-      }
-    });
-
-    // For each time slot, schedule a notification 10 minutes before
-    const sentToday = new Set();
+    const tasksByTime = buildTasksByTime(settings, tasks, shifts);
+    const now = new Date();
 
     Object.entries(tasksByTime).forEach(([timeStr, taskNames]) => {
       const { hours, minutes } = parseTime(timeStr);
 
-      // Notification fires 10 min early
+      // Fire 10 min before the task time
       let notifHours   = hours;
       let notifMinutes = minutes - 10;
-      if (notifMinutes < 0) { notifMinutes += 60; notifHours -= 1; }
+      if (notifMinutes < 0) { notifMinutes += 60; notifHours--; }
       if (notifHours < 0)   notifHours += 24;
 
       const fireDate = nextOccurrenceOfTime(notifHours, notifMinutes);
       const delay    = msUntil(fireDate);
       const tag      = `task-${timeStr}`;
 
-      // Only schedule if it's within the next 24 hours and not already sent
-      if (delay <= 24 * 60 * 60 * 1000 && !sentToday.has(tag)) {
-        sentToday.add(tag);
+      console.log('[SW] Task slot', timeStr, '→ notify at', fireDate.toLocaleTimeString(), 'in', Math.round(delay/60000), 'min');
+
+      if (delay <= 24 * 60 * 60 * 1000) {
         scheduleTimeout(() => {
           const body = taskNames.map(n => `• ${n}`).join('\n');
-          fireNotification(
-            `Oppgaver kl ${timeStr}`,
-            body,
-            tag
-          );
+          fireNotification(`Oppgaver kl ${timeStr}`, body, tag);
         }, delay);
+        scheduledCount++;
       }
     });
   }
+
+  console.log('[SW] Scheduled', scheduledCount, 'notifications total');
+
+  // ── 3. Keepalive: re-check every 5 min in case SW was restarted ───────
+  if (keepaliveInterval) clearInterval(keepaliveInterval);
+  keepaliveInterval = setInterval(() => {
+    if (lastSchedule && scheduledTimeouts.length === 0) {
+      console.log('[SW] Keepalive: rescheduling lost timeouts');
+      buildSchedule(lastSchedule.settings, lastSchedule.tasks, lastSchedule.shifts);
+    }
+  }, 5 * 60 * 1000);
 }
 
 // ─── Message handler ───────────────────────────────────────────────────────

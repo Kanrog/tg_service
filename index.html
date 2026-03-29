@@ -43,8 +43,6 @@
         .btn-danger { background: #dc3545; }
         .btn-danger:hover { background: #c82333; }
         .btn-small { padding: 8px 16px; font-size: 14px; margin-left: 10px; width: auto; }
-        .btn-success { background: #28a745; }
-        .btn-success:hover { background: #218838; }
 
         .header {
             background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
@@ -66,34 +64,13 @@
         .section-header h2 { color: #667eea; font-size: 20px; }
 
         .settings-group { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0; }
-        .settings-group:last-child { border-bottom: none; }
+        .settings-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .settings-group > label { display: block; font-weight: 600; color: #667eea; margin-bottom: 10px; }
         .settings-group select {
             width: 100%; padding: 12px; font-size: 16px;
             border: 2px solid #e0e0e0; border-radius: 10px; background: white; cursor: pointer;
         }
         .settings-group select:focus { outline: none; border-color: #667eea; }
-
-        .checkbox-setting {
-            display: flex; align-items: center; padding: 15px;
-            background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;
-        }
-        .checkbox-setting input[type="checkbox"] { width: 24px; height: 24px; margin-right: 15px; cursor: pointer; }
-        .checkbox-setting label { cursor: pointer; font-size: 16px; margin: 0; font-weight: normal; color: #333; flex-grow: 1; }
-
-        .sub-setting { margin-left: 39px; margin-top: 10px; }
-        .sub-setting select { padding: 8px; font-size: 14px; }
-
-        .status-display { background: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; border-radius: 8px; margin-top: 15px; }
-        .status-display p { margin: 5px 0; color: #1976D2; font-size: 14px; }
-        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin-top: 15px; }
-        .warning-box p { margin: 5px 0; color: #856404; font-size: 14px; }
-        .error-box { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; border-radius: 8px; margin-top: 15px; }
-        .error-box p { margin: 5px 0; color: #721c24; font-size: 14px; }
-
-        .section ol { margin-left: 20px; color: #333; }
-        .section ol li { margin: 10px 0; line-height: 1.6; }
-        .section h3 { color: #667eea; margin-bottom: 10px; font-size: 18px; }
 
         .checkbox-item {
             padding: 15px; margin: 10px 0; background: #f8f9fa;
@@ -105,6 +82,14 @@
         .checkbox-item input[type="checkbox"]:checked + label { text-decoration: line-through; color: #999; }
 
         .reset-all-container { text-align: center; margin: 30px 0; }
+
+        .tips-box {
+            background: #fff3cd; border-left: 5px solid #ffc107;
+            border-radius: 10px; padding: 20px; margin-top: 20px;
+        }
+        .tips-box h3 { color: #856404; margin-bottom: 15px; font-size: 20px; }
+        .tips-box ul { list-style-position: inside; color: #856404; }
+        .tips-box li { margin: 10px 0; line-height: 1.6; }
 
         .loading { text-align: center; padding: 20px; color: #667eea; }
         .loading-spinner {
@@ -131,15 +116,11 @@
             padding: 10px 15px; border-radius: 10px; display: none; z-index: 1000; font-size: 14px;
         }
 
-        /* Notification test button area */
-        .test-area { margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; }
-
         @media (max-width: 768px) {
             body { padding: 10px; }
             .header { padding: 15px; }
             .section { padding: 15px; }
             .login-card { padding: 30px 20px; }
-            .update-notification { right: 10px; top: 10px; max-width: calc(100% - 20px); }
         }
     </style>
 </head>
@@ -166,120 +147,17 @@
             <button class="btn btn-small btn-secondary" onclick="refreshData()">↻ Oppdater data</button>
         </div>
 
-        <!-- Install Prompt -->
-        <div id="installPrompt" class="section" style="display: none;">
-            <div class="section-header"><h2>📱 Installer appen</h2></div>
-            <div class="warning-box">
-                <p><strong>💡 Viktig!</strong></p>
-                <p>For at varsler skal fungere må appen installeres på hjemskjermen din.</p>
-            </div>
-            <div id="androidInstructions" style="display: none; margin-top: 15px;">
-                <h3>📱 Android:</h3>
-                <ol>
-                    <li>Trykk på <strong>menyen</strong> (tre prikker) øverst i nettleseren</li>
-                    <li>Velg <strong>"Legg til på startsiden"</strong> eller <strong>"Installer app"</strong></li>
-                    <li>Trykk <strong>"Installer"</strong></li>
-                </ol>
-                <button id="androidInstallBtn" class="btn" style="margin-top: 15px; display: none;" onclick="triggerInstallPrompt()">
-                    📲 Installer app nå
-                </button>
-            </div>
-            <div id="iosInstructions" style="display: none; margin-top: 15px;">
-                <h3>📱 iPhone/iPad:</h3>
-                <ol>
-                    <li>Åpne denne siden i <strong>Safari</strong></li>
-                    <li>Trykk på <strong>Del-knappen</strong> (firkant med pil opp) nederst</li>
-                    <li>Velg <strong>"Legg til på Hjem-skjerm"</strong></li>
-                    <li>Trykk <strong>"Legg til"</strong></li>
-                </ol>
-                <p style="margin-top: 10px; color: #856404; font-size: 14px;">
-                    ⚠️ Krever iOS 16.4+ og at appen er lagt til på hjemskjermen.
-                </p>
-            </div>
-            <button class="btn btn-secondary" style="margin-top: 15px;" onclick="dismissInstallPrompt()">
-                Jeg har allerede installert appen
-            </button>
-        </div>
-
-        <!-- Notification Settings -->
+        <!-- Shift selector -->
         <div class="section">
-            <div class="section-header">
-                <h2>🔔 Påminnelser</h2>
-                <button class="btn btn-small btn-danger" onclick="disableAllNotifications()">Skru av alle varsler</button>
-            </div>
-
-            <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
-                💡 Varsler sendes av appen selv når den er installert – de fungerer selv om du låser skjermen.
-            </p>
-
+            <div class="section-header"><h2>⏰ Mitt skift</h2></div>
             <div class="settings-group">
-                <label for="shiftSelect">Mitt skift:</label>
-                <select id="shiftSelect" onchange="saveNotificationSettings()">
+                <label for="shiftSelect">Velg skift for å se dine oppgaver:</label>
+                <select id="shiftSelect" onchange="onShiftChange()">
                     <option value="">Velg skift...</option>
                     <option value="day">Dag (08:00–16:00)</option>
                     <option value="evening">Kveld (16:00–00:00)</option>
                     <option value="night">Natt (00:00–08:00)</option>
                 </select>
-            </div>
-
-            <div class="settings-group">
-                <div class="checkbox-setting">
-                    <input type="checkbox" id="shiftStartReminder" onchange="saveNotificationSettings()">
-                    <label for="shiftStartReminder">Påminn meg før skiftet starter</label>
-                </div>
-                <div class="sub-setting" id="shiftStartLeadTime" style="display: none;">
-                    <select id="shiftStartMinutes" onchange="saveNotificationSettings()">
-                        <option value="15">15 minutter før</option>
-                        <option value="30">30 minutter før</option>
-                        <option value="60">60 minutter før</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="settings-group">
-                <div class="checkbox-setting">
-                    <input type="checkbox" id="hourlyReminders" onchange="saveNotificationSettings()">
-                    <label for="hourlyReminders">Timebaserte oppgavepåminnelser</label>
-                </div>
-                <p style="margin-left: 39px; margin-top: 5px; font-size: 14px; color: #666;">
-                    Varsler på nøyaktig tidspunkt for hver planlagte oppgave
-                </p>
-            </div>
-
-            <!-- Status / warnings -->
-            <div id="notificationStatus" class="status-display" style="display: none;">
-                <p><strong>Status:</strong></p>
-                <p id="statusText"></p>
-                <p id="nextReminderText"></p>
-            </div>
-            <div id="notificationWarning" style="display: none;"></div>
-
-            <button id="enableNotificationsBtn" class="btn" style="margin-top: 15px; display: none;" onclick="
-                dbg('Button tapped. Notification in window: ' + ('Notification' in window) + ', permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'));
-                if (!('Notification' in window)) { dbg('ERROR: Notification API not available'); return; }
-                dbg('Calling requestPermission...');
-                try {
-                    Notification.requestPermission().then(function(perm) { dbg('Permission result: ' + perm); onPermissionResult(perm); });
-                } catch(e) { dbg('EXCEPTION: ' + e.message); }
-            ">
-                Aktiver påminnelser
-            </button>
-
-            <!-- Debug panel -->
-            <div id="debugPanel" style="margin-top:15px; padding:12px; background:#1e1e1e; color:#00ff88; border-radius:8px; font-family:monospace; font-size:12px; display:none; max-height:200px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;"></div>
-            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button id="debugToggle" class="btn btn-secondary btn-small" onclick="toggleDebug()">🐛 Vis feilsøking</button>
-                <button class="btn btn-small" style="background:#764ba2;" onclick="setWorkerUrl()">🔗 Sett Worker URL</button>
-                <button class="btn btn-small" style="background:#764ba2;" onclick="forceReschedule()">↺ Re-abonner</button>
-                <button class="btn btn-small" style="background:#764ba2;" onclick="forceTestIn10s()">⏱ Testvarsel om 10 sek</button>
-            </div>
-
-            <!-- Test button (visible only after permission granted) -->
-            <div id="testArea" class="test-area" style="display: none;">
-                <button class="btn btn-success btn-small" onclick="sendTestNotification()">
-                    🔔 Send testvarsel nå
-                </button>
-                <span id="testResult" style="margin-left: 10px; font-size: 13px; color: #666;"></span>
             </div>
         </div>
 
@@ -289,6 +167,18 @@
         <!-- Reset All -->
         <div class="reset-all-container">
             <button class="btn btn-danger" onclick="resetAll()">Reset alle avkrysninger</button>
+        </div>
+
+        <!-- Tips -->
+        <div class="section tips-box">
+            <h3>💡 Tips</h3>
+            <ul>
+                <li>Det er lettere å "gjøre litt her og der" hele vakten enn å stå en time eller to i oppvasken</li>
+                <li>Sett på alarm på telefonen, så slipper du å glemme noe</li>
+                <li>Hold god kommunikasjon med Kjøkken slik at alt er klart til middags-servering</li>
+                <li>Brød holder seg best om det er nyskjært, så unngå å skjære opp flere brød enn nødvendig</li>
+                <li>Husk å ta vare på hverandre, etterlat lokalet i den tilstanden du ønsker den skal være når du starter din vakt.</li>
+            </ul>
         </div>
     </div>
 </div>
@@ -304,46 +194,6 @@
 <div id="offlineIndicator" class="offline-indicator">📡 Offline-modus</div>
 
 <script>
-// ─── Debug helpers (must be first) ───────────────────────────────────────────
-let debugVisible = false;
-let debugLines = [];
-function dbg(msg) {
-    console.log('[DBG]', msg);
-    const ts = new Date().toLocaleTimeString('no-NO');
-    debugLines.push(ts + '  ' + msg);
-    const panel = document.getElementById('debugPanel');
-    if (panel) {
-        panel.textContent = debugLines.join('\n');
-        panel.scrollTop = panel.scrollHeight;
-        if (debugVisible) panel.style.display = 'block';
-    }
-}
-function toggleDebug() {
-    debugVisible = !debugVisible;
-    const panel = document.getElementById('debugPanel');
-    const btn   = document.getElementById('debugToggle');
-    if (panel) {
-        panel.textContent = debugLines.join('\n');
-        panel.style.display = debugVisible ? 'block' : 'none';
-    }
-    if (btn) btn.textContent = debugVisible ? '🐛 Skjul feilsøking' : '🐛 Vis feilsøking';
-    if (debugVisible) {
-        dbg('--- State dump ---');
-        dbg('Notification in window: ' + ('Notification' in window));
-        dbg('Permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'));
-        dbg('serviceWorker in navigator: ' + ('serviceWorker' in navigator));
-        dbg('swRegistration: ' + (swRegistration ? 'yes (active=' + !!(swRegistration.active) + ')' : 'null'));
-        dbg('SW controller: ' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
-        dbg('display-mode standalone: ' + window.matchMedia('(display-mode: standalone)').matches);
-        dbg('navigator.standalone: ' + navigator.standalone);
-        dbg('protocol: ' + location.protocol);
-        dbg('host: ' + location.host);
-        dbg('userAgent: ' + navigator.userAgent.substring(0, 80));
-        dbg('--- End dump ---');
-    }
-}
-
-// ─── Configuration ──────────────────────────────────────────────────────────
 const GOOGLE_SHEET_ID  = '14nK3EVd-vBhxAuyZ8sBQlsKm12h9yajOSRDlhg-rONE';
 const GOOGLE_SHEET_GID = '1316132220';
 
@@ -353,48 +203,15 @@ const SHIFTS = {
     night:   { name: 'Natt',  start: '00:00', end: '08:00' }
 };
 
-let checklistData        = [];
-let swRegistration       = null;
-let deferredInstallPrompt = null;
+let checklistData = [];
 
-// ─── Service Worker registration ────────────────────────────────────────────
+// ─── Service Worker ──────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./service-worker.js')
-            .then(reg => {
-                swRegistration = reg;
-                dbg('SW registered. scope=' + reg.scope + ' active=' + !!(reg.active) + ' installing=' + !!(reg.installing));
-
-                reg.addEventListener('updatefound', () => {
-                    const w = reg.installing;
-                    w.addEventListener('statechange', () => {
-                        dbg('SW state: ' + w.state);
-                        if (w.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateNotification('En ny versjon er tilgjengelig!');
-                        }
-                    });
-                });
-
-                // If no active worker yet, wait for it
-                if (!reg.active) {
-                    const worker = reg.installing || reg.waiting;
-                    if (worker) {
-                        worker.addEventListener('statechange', () => {
-                            dbg('SW became: ' + worker.state);
-                            if (worker.state === 'activated') {
-                                swRegistration = reg;
-                                dbg('SW now active - ready for notifications');
-                            }
-                        });
-                    }
-                }
-            })
-            .catch(err => {
-                dbg('SW REGISTRATION FAILED: ' + err.message);
-                console.error('SW registration failed:', err);
-            });
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.error('SW failed:', err));
     });
-
     navigator.serviceWorker.addEventListener('message', event => {
         if (event.data && event.data.type === 'DATA_UPDATED') {
             showUpdateNotification(event.data.message);
@@ -402,7 +219,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// ─── Network status ──────────────────────────────────────────────────────────
+// ─── Network ─────────────────────────────────────────────────────────────────
 window.addEventListener('online', () => {
     document.getElementById('offlineIndicator').style.display = 'none';
     loadGoogleSheetData(true);
@@ -419,7 +236,7 @@ function showUpdateNotification(msg) {
 }
 function reloadPage() { window.location.reload(); }
 
-// ─── Data loading ────────────────────────────────────────────────────────────
+// ─── Data loading ─────────────────────────────────────────────────────────────
 async function loadGoogleSheetData(silent = false) {
     try {
         if (!silent) {
@@ -431,14 +248,12 @@ async function loadGoogleSheetData(silent = false) {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         parseCSV(await response.text());
     } catch (err) {
-        console.error('Error loading sheet:', err);
         const cached = localStorage.getItem('crewcare_checklist');
         if (cached) {
             checklistData = JSON.parse(cached);
             if (!silent) showMainApp();
             generateChecklist();
             loadState();
-            loadNotificationSettings();
             if (!navigator.onLine) document.getElementById('offlineIndicator').style.display = 'block';
         } else if (!silent) {
             showError('Kunne ikke laste data fra Google Sheet. Sjekk internett-tilkoblingen din.');
@@ -458,10 +273,10 @@ function parseCSV(csvText) {
         dayTime:     headers.findIndex(h => h === 'day time'),
         eveningTime: headers.findIndex(h => h === 'evening time'),
         nightTime:   headers.findIndex(h => h === 'night time'),
-        interval:    headers.findIndex(h => h === 'interval')
+        interval:    headers.findIndex(h => h === 'interval'),
     };
 
-    if (idx.enabled === -1 || idx.category === -1 || idx.task === -1) {
+    if (idx.enabled < 0 || idx.category < 0 || idx.task < 0) {
         showError('Google Sheet må inneholde kolonnene: Enabled, Category, Task');
         return;
     }
@@ -469,27 +284,25 @@ function parseCSV(csvText) {
     checklistData = [];
     for (let i = 1; i < lines.length; i++) {
         const f = parseCSVLine(lines[i].trim());
-        const enabled  = (f[idx.enabled] || '').toUpperCase() === 'TRUE';
         const category = f[idx.category] || '';
         const task     = f[idx.task] || '';
         if (!category || !task) continue;
         checklistData.push({
-            enabled,
-            category,
-            task,
+            enabled:     (f[idx.enabled] || '').toUpperCase() === 'TRUE',
+            category, task,
             dayTime:     normalizeTime(f[idx.dayTime]     || ''),
             eveningTime: normalizeTime(f[idx.eveningTime] || ''),
             nightTime:   normalizeTime(f[idx.nightTime]   || ''),
-            interval:    idx.interval >= 0 && f[idx.interval] ? parseInt(f[idx.interval], 10) : null
+            interval:    idx.interval >= 0 && f[idx.interval] ? parseInt(f[idx.interval], 10) : null,
         });
     }
 
     if (checklistData.length === 0) { showError('Ingen gyldige sjekklistepunkter funnet'); return; }
     localStorage.setItem('crewcare_checklist', JSON.stringify(checklistData));
     showMainApp();
+    loadShiftSetting();
     generateChecklist();
     loadState();
-    loadNotificationSettings();
 }
 
 function parseCSVLine(line) {
@@ -523,7 +336,20 @@ function showMainApp() {
     document.getElementById('mainApp').style.display = 'block';
 }
 
-// ─── Checklist rendering ─────────────────────────────────────────────────────
+// ─── Shift ───────────────────────────────────────────────────────────────────
+function loadShiftSetting() {
+    const saved = localStorage.getItem('selected_shift') || '';
+    document.getElementById('shiftSelect').value = saved;
+}
+
+function onShiftChange() {
+    const shift = document.getElementById('shiftSelect').value;
+    localStorage.setItem('selected_shift', shift);
+    generateChecklist();
+    loadState();
+}
+
+// ─── Checklist ────────────────────────────────────────────────────────────────
 function hashCode(str) {
     let h = 0;
     for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h = h & h; }
@@ -534,14 +360,13 @@ function generateChecklist() {
     const container = document.getElementById('checklistContainer');
     container.innerHTML = '';
 
-    const settings     = getNotificationSettings();
-    const selectedShift = settings.shift;
+    const selectedShift = document.getElementById('shiftSelect').value;
 
     if (!selectedShift) {
         container.innerHTML = `
             <div class="section">
                 <p style="text-align:center;color:#666;padding:40px 20px;">
-                    👆 Velg ditt skift i påminnelser-seksjonen over for å se sjekklisten din
+                    👆 Velg ditt skift over for å se sjekklisten din
                 </p>
             </div>`;
         return;
@@ -554,7 +379,8 @@ function generateChecklist() {
 
     checklistData.forEach(item => {
         if (!item.enabled) return;
-        let taskTime = selectedShift === 'day' ? item.dayTime
+
+        let taskTime = selectedShift === 'day'     ? item.dayTime
                      : selectedShift === 'evening' ? item.eveningTime
                      : item.nightTime;
 
@@ -598,7 +424,7 @@ function generateChecklist() {
         const sectionId = `section-${index}`;
         let tasksHTML = '';
         tasksByTime[time].forEach(item => {
-            const taskId     = 'task-' + hashCode(item.category + item.task + time);
+            const taskId      = 'task-' + hashCode(item.category + item.task + time);
             const displayText = item.isInterval ? `${item.task} ${item.intervalDisplay}` : item.task;
             tasksHTML += `
                 <div class="checkbox-item">
@@ -610,7 +436,7 @@ function generateChecklist() {
             <div class="section" id="${sectionId}">
                 <div class="section-header">
                     <h2>⏰ ${time}</h2>
-                    <button class="btn btn-small" onclick="resetSection('${sectionId}')">Reset</button>
+                    <button class="btn btn-small btn-secondary" onclick="resetSection('${sectionId}')">Reset</button>
                 </div>
                 ${tasksHTML}
             </div>`;
@@ -657,448 +483,9 @@ function resetAll() {
     saveState();
 }
 
-// ─── Notification system ─────────────────────────────────────────────────────
-//
-// Key design: the page never calls new Notification() directly.
-// Instead it sends a SCHEDULE_NOTIFICATIONS message to the service worker,
-// which uses setTimeout chains to call self.registration.showNotification().
-// This works when the screen is locked and on Android background tabs.
-// On iOS it requires the app to be installed to the home screen (iOS 16.4+).
-//
-
-function getNotificationSettings() {
-    const saved = localStorage.getItem('notification_settings');
-    return saved ? JSON.parse(saved) : {
-        shift: '', shiftStartReminder: false, shiftStartMinutes: '15', hourlyReminders: false
-    };
-}
-
-function saveNotificationSettings() {
-    const settings = {
-        shift:              document.getElementById('shiftSelect').value,
-        shiftStartReminder: document.getElementById('shiftStartReminder').checked,
-        shiftStartMinutes:  document.getElementById('shiftStartMinutes').value,
-        hourlyReminders:    document.getElementById('hourlyReminders').checked
-    };
-    localStorage.setItem('notification_settings', JSON.stringify(settings));
-    document.getElementById('shiftStartLeadTime').style.display =
-        settings.shiftStartReminder ? 'block' : 'none';
-
-    updateNotificationStatus();
-    pushScheduleToServiceWorker(settings);
-    generateChecklist();
-    loadState();
-}
-
-function loadNotificationSettings() {
-    const s = getNotificationSettings();
-    document.getElementById('shiftSelect').value        = s.shift || '';
-    document.getElementById('shiftStartReminder').checked = s.shiftStartReminder || false;
-    document.getElementById('shiftStartMinutes').value  = s.shiftStartMinutes || '15';
-    document.getElementById('hourlyReminders').checked  = s.hourlyReminders || false;
-    document.getElementById('shiftStartLeadTime').style.display =
-        s.shiftStartReminder ? 'block' : 'none';
-    updateNotificationStatus();
-    // Only push to SW if permission already granted
-    if (Notification.permission === 'granted') {
-        pushScheduleToServiceWorker(s);
-    }
-}
-
-// Send the full task list + settings to the service worker for scheduling
-// ── Web Push subscription ────────────────────────────────────────────────
-// The Cloudflare Worker URL - update this after deploying your Worker
-let WORKER_URL = localStorage.getItem('worker_url') || 'https://tg-service-notifications.marsto87.workers.dev';
-
-async function getVapidPublicKey() {
-    if (!WORKER_URL) return null;
-    try {
-        const res = await fetch(WORKER_URL + '/vapid-public-key');
-        const { key } = await res.json();
-        return key;
-    } catch (e) {
-        dbg('Failed to fetch VAPID key: ' + e.message);
-        return null;
-    }
-}
-
-async function subscribeToPush(shift) {
-    if (!swRegistration) { dbg('No SW registration'); return false; }
-    const vapidKey = await getVapidPublicKey();
-    if (!vapidKey) { dbg('No VAPID key - is WORKER_URL set?'); return false; }
-
-    try {
-        // Convert VAPID public key to Uint8Array
-        const keyBuffer = urlBase64ToUint8Array(vapidKey);
-
-        const subscription = await swRegistration.pushManager.subscribe({
-            userVisibleOnly:      true,
-            applicationServerKey: keyBuffer
-        });
-
-        dbg('Push subscription created, sending to worker...');
-
-        const res = await fetch(WORKER_URL + '/subscribe', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ subscription: subscription.toJSON(), shift })
-        });
-
-        if (!res.ok) throw new Error('Worker returned ' + res.status);
-        const data = await res.json();
-        dbg('Subscribed OK, key: ' + data.key);
-        localStorage.setItem('push_subscribed', 'true');
-        localStorage.setItem('push_shift', shift);
-        return true;
-    } catch (e) {
-        dbg('Subscribe failed: ' + e.message);
-        return false;
-    }
-}
-
-async function unsubscribeFromPush() {
-    if (!swRegistration) return;
-    try {
-        const sub = await swRegistration.pushManager.getSubscription();
-        if (sub) {
-            await fetch(WORKER_URL + '/subscribe', {
-                method:  'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ endpoint: sub.endpoint })
-            });
-            await sub.unsubscribe();
-            localStorage.removeItem('push_subscribed');
-            dbg('Unsubscribed from push');
-        }
-    } catch (e) {
-        dbg('Unsubscribe error: ' + e.message);
-    }
-}
-
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    const raw     = atob(base64);
-    return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
-}
-
-async function checkPushSubscription() {
-    if (!swRegistration) return;
-    const sub = await swRegistration.pushManager.getSubscription();
-    const savedShift = localStorage.getItem('push_shift');
-    const settings   = getNotificationSettings();
-
-    if (sub && savedShift !== settings.shift && settings.shift) {
-        // Shift changed - re-subscribe with new shift
-        dbg('Shift changed, re-subscribing...');
-        await subscribeToPush(settings.shift);
-    }
-}
-
-// No-op - scheduling is done server-side
-function startNotificationInterval() {}
-function stopNotificationInterval() {}
-
-function pushScheduleToServiceWorker(settings) {
-    // With Web Push, we just ensure the subscription is up to date
-    if (Notification.permission === 'granted' && settings.shift &&
-        (settings.shiftStartReminder || settings.hourlyReminders)) {
-        checkPushSubscription();
-    }
-}
-
-function requestNotificationPermission() {
-    // Kept for any legacy calls - routes through the same callback
-    if (!('Notification' in window)) {
-        showWarning('Din nettleser støtter ikke varsler.');
-        return;
-    }
-    Notification.requestPermission().then(function(perm) { onPermissionResult(perm); });
-}
-
-function onPermissionResult(perm) {
-    console.log('[Notifications] Permission result:', perm);
-    if (perm === 'granted') {
-        updateNotificationStatus();
-        const settings = getNotificationSettings();
-        generateChecklist();
-        loadState();
-        // Subscribe to Web Push if worker URL is configured
-        if (WORKER_URL && settings.shift) {
-            dbg('Permission granted - subscribing to push...');
-            subscribeToPush(settings.shift).then(ok => {
-                if (ok) updateNotificationStatus();
-                else showWarning('Varsel-abonnement feilet. Sjekk at Worker URL er satt riktig.');
-            });
-        } else if (!WORKER_URL) {
-            showWarning('Worker URL er ikke satt. Åpne feilsøkingspanelet og trykk "Sett Worker URL".');
-        }
-    } else if (perm === 'denied') {
-        showWarning('Varsler er blokkert. Gå til nettleserinnstillinger → Varsler for å aktivere.');
-        updateNotificationStatus();
-    } else {
-        showWarning('Du må trykke "Tillat" i dialogboksen for å aktivere varsler.');
-        updateNotificationStatus();
-    }
-}
-
-function disableAllNotifications() {
-    if (!confirm('Er du sikker på at du vil skru av alle varsler?')) return;
-    document.getElementById('shiftStartReminder').checked = false;
-    document.getElementById('hourlyReminders').checked    = false;
-    saveNotificationSettings();
-    stopNotificationInterval();
-    alert('✓ Alle varsler er skrudd av');
-}
-
-function forceReschedule() {
-    if (Notification.permission !== 'granted') { dbg('Permission not granted'); return; }
-    const settings = getNotificationSettings();
-    dbg('Force re-subscribe: unsubscribing first...');
-    if (!WORKER_URL) { dbg('ERROR: WORKER_URL not set'); return; }
-    if (!swRegistration) { dbg('No SW registration'); return; }
-
-    swRegistration.pushManager.getSubscription().then(sub => {
-        const unsub = sub ? sub.unsubscribe() : Promise.resolve(true);
-        return unsub;
-    }).then(() => {
-        dbg('Unsubscribed. Creating fresh subscription...');
-        return subscribeToPush(settings.shift);
-    }).then(ok => {
-        dbg(ok ? '✅ Fresh push subscription created!' : '❌ Re-subscribe FAILED');
-        updateNotificationStatus();
-    }).catch(err => dbg('Error: ' + err.message));
-}
-
-function setWorkerUrl() {
-    const url = prompt('Lim inn Cloudflare Worker URL (f.eks. https://xxx.workers.dev):');
-    if (url && url.startsWith('https://')) {
-        WORKER_URL = url.replace(/\/$/, '');
-        localStorage.setItem('worker_url', WORKER_URL);
-        dbg('Worker URL satt til: ' + WORKER_URL);
-
-        // If permission already granted, subscribe immediately
-        if (Notification.permission === 'granted') {
-            const settings = getNotificationSettings();
-            if (settings.shift) {
-                dbg('Permission already granted - subscribing now...');
-                subscribeToPush(settings.shift).then(ok => {
-                    dbg(ok ? '✅ Push-abonnement aktivert!' : '❌ Abonnement feilet - sjekk debug');
-                    updateNotificationStatus();
-                });
-            } else {
-                dbg('URL satt - velg skift og aktiver påminnelser for å abonnere');
-                updateNotificationStatus();
-            }
-        } else {
-            dbg('URL satt - trykk "Aktiver påminnelser" for å fortsette');
-            updateNotificationStatus();
-        }
-    } else {
-        dbg('Ugyldig URL - må starte med https://');
-    }
-}
-
-function forceTestIn10s() {
-    if (!swRegistration) { dbg('No SW registration'); return; }
-    dbg('Scheduling test notification in 10 seconds via page timeout...');
-    setTimeout(() => {
-        dbg('10s elapsed - firing notification now');
-        swRegistration.showNotification('⏱ Tidsbasert testvarsel', {
-            body: 'Denne ble trigget av page-side setTimeout etter 10 sekunder',
-            icon: './icons/icon-192x192.png',
-            tag: 'timed-test',
-            requireInteraction: true
-        }).then(() => dbg('Timed test notification fired OK'))
-          .catch(err => dbg('ERROR: ' + err.message));
-    }, 10000);
-}
-
-function sendTestNotification() {
-    const result = document.getElementById('testResult');
-    if (!('serviceWorker' in navigator) || !swRegistration) {
-        result.textContent = '⚠️ Service worker ikke klar – prøv igjen om et sekund.';
-        return;
-    }
-    if (Notification.permission !== 'granted') {
-        result.textContent = '⚠️ Tillatelse ikke gitt.';
-        return;
-    }
-    swRegistration.active
-        ? swRegistration.active.postMessage({ type: 'TEST_NOTIFICATION' })
-        : navigator.serviceWorker.ready.then(r => r.active.postMessage({ type: 'TEST_NOTIFICATION' }));
-
-    // The SW doesn't handle TEST_NOTIFICATION yet – fire directly from registration
-    swRegistration.showNotification('🔔 Testvarsel', {
-        body: 'Varsler fungerer! Du vil motta påminnelser fra appen.',
-        icon: '/icons/icon-192x192.png',
-        badge: '/icons/icon-72x72.png',
-        tag: 'test',
-        requireInteraction: false
-    }).then(() => {
-        result.textContent = '✅ Sendt!';
-        setTimeout(() => result.textContent = '', 3000);
-    }).catch(err => {
-        result.textContent = `⚠️ Feil: ${err.message}`;
-    });
-}
-
-function updateNotificationStatus() {
-    const statusDiv  = document.getElementById('notificationStatus');
-    const warningDiv = document.getElementById('notificationWarning');
-    const enableBtn  = document.getElementById('enableNotificationsBtn');
-    const testArea   = document.getElementById('testArea');
-    const statusText = document.getElementById('statusText');
-    const nextText   = document.getElementById('nextReminderText');
-
-    warningDiv.innerHTML = '';
-    warningDiv.style.display = 'none';
-    statusDiv.style.display  = 'none';
-    enableBtn.style.display  = 'none';
-    testArea.style.display   = 'none';
-
-    if (!('Notification' in window)) {
-        renderWarning(warningDiv, 'error', 'Din nettleser støtter ikke push-varsler.');
-        return;
-    }
-
-    // iOS check
-    const isIOS        = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-
-    if (isIOS && !isStandalone) {
-        renderWarning(warningDiv, 'warning',
-            'På iPhone/iPad må du <strong>installere appen på hjemskjermen</strong> for at varsler skal fungere (krever iOS 16.4+).');
-        return;
-    }
-
-    if (Notification.permission === 'default') {
-        // Show the button only if the user has ticked a reminder option
-        const s = getNotificationSettings();
-        if (s.shiftStartReminder || s.hourlyReminders) {
-            enableBtn.style.display = 'block';
-        } else {
-            enableBtn.style.display = 'none';
-        }
-        return;
-    }
-
-    if (Notification.permission === 'denied') {
-        renderWarning(warningDiv, 'error',
-            'Varsler er blokkert i nettleserinnstillingene. Gå til nettleserinnstillinger → Personvern → Varsler for å aktivere.');
-        return;
-    }
-
-    // Permission granted
-    testArea.style.display = 'block';
-
-    const settings = getNotificationSettings();
-
-    if (!settings.shift) {
-        renderWarning(warningDiv, 'warning', 'Velg et skift for å aktivere påminnelser.');
-        return;
-    }
-
-    if (!settings.shiftStartReminder && !settings.hourlyReminders) {
-        statusDiv.style.display = 'block';
-        statusText.textContent  = '⭕ Varsler er skrudd AV – kryss av en varseltype for å aktivere';
-        statusText.style.color  = '#dc3545';
-        nextText.textContent    = '';
-        return;
-    }
-
-    statusDiv.style.display = 'block';
-    const shiftName  = SHIFTS[settings.shift].name;
-    const parts      = [];
-    if (settings.shiftStartReminder) parts.push(`skiftstart (${settings.shiftStartMinutes} min før)`);
-    if (settings.hourlyReminders)    parts.push('timebaserte oppgaver');
-    statusText.textContent = `✅ Påminnelser aktive for ${shiftName}-skift: ${parts.join(', ')}`;
-    statusText.style.color = '#1976D2';
-    const pushSub = localStorage.getItem('push_subscribed');
-    const workerSet = !!WORKER_URL;
-    if (!workerSet) {
-        nextText.textContent = '⚠️ Worker URL ikke satt – åpne feilsøkingspanel og trykk "Sett Worker URL"';
-        nextText.style.color = '#856404';
-    } else if (!pushSub) {
-        nextText.textContent = '⚠️ Ikke abonnert på push ennå – trykk "Aktiver påminnelser" på nytt';
-        nextText.style.color = '#856404';
-    } else {
-        nextText.textContent = '✅ Push-abonnement aktivt – varsler leveres selv med låst skjerm';
-        nextText.style.color = '#1976D2';
-    }
-}
-
-function renderWarning(div, type, html) {
-    const cls = type === 'error' ? 'error-box' : 'warning-box';
-    div.innerHTML  = `<div class="${cls}"><p>${html}</p></div>`;
-    div.style.display = 'block';
-}
-
-function showWarning(msg) {
-    const d = document.getElementById('notificationWarning');
-    renderWarning(d, 'warning', msg);
-}
-
-// ─── Install prompt ──────────────────────────────────────────────────────────
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    const btn = document.getElementById('androidInstallBtn');
-    if (btn) btn.style.display = 'block';
-});
-
-function isAppInstalled() {
-    return window.matchMedia('(display-mode: standalone)').matches
-        || navigator.standalone === true
-        || localStorage.getItem('install_prompt_dismissed') === 'true';
-}
-
-function showInstallPrompt() {
-    if (isAppInstalled()) return;
-    const prompt       = document.getElementById('installPrompt');
-    const androidInstr = document.getElementById('androidInstructions');
-    const iosInstr     = document.getElementById('iosInstructions');
-    if (!prompt) return;
-    const isIOS     = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    const isAndroid = /Android/.test(navigator.userAgent);
-    if (isIOS)          { iosInstr.style.display = 'block'; }
-    else if (isAndroid) { androidInstr.style.display = 'block'; }
-    else                { androidInstr.style.display = 'block'; iosInstr.style.display = 'block'; }
-    prompt.style.display = 'block';
-}
-
-async function triggerInstallPrompt() {
-    if (!deferredInstallPrompt) { alert('Bruk nettlesermenyen for å installere.'); return; }
-    deferredInstallPrompt.prompt();
-    const { outcome } = await deferredInstallPrompt.userChoice;
-    if (outcome === 'accepted') dismissInstallPrompt();
-    deferredInstallPrompt = null;
-}
-
-function dismissInstallPrompt() {
-    localStorage.setItem('install_prompt_dismissed', 'true');
-    const p = document.getElementById('installPrompt');
-    if (p) p.style.display = 'none';
-}
-
-// ─── Boot ────────────────────────────────────────────────────────────────────
+// ─── Boot ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    dbg('Page loaded. controller=' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
     loadGoogleSheetData();
-    setTimeout(showInstallPrompt, 2000);
-    // Reschedule on every page load in case SW was restarted and lost its timeouts
-    if (Notification.permission === 'granted') {
-        navigator.serviceWorker.ready.then(reg => {
-            swRegistration = reg;
-            const settings = getNotificationSettings();
-            dbg('Page load reschedule: shift=' + settings.shift + ' hourly=' + settings.hourlyReminders + ' tasks=' + checklistData.length);
-            pushScheduleToServiceWorker(settings);
-        });
-    }
-    setTimeout(() => {
-        dbg('2s check: swRegistration=' + (swRegistration ? 'yes' : 'null') + ' controller=' + !!(navigator.serviceWorker && navigator.serviceWorker.controller));
-        if (swRegistration) dbg('SW active=' + !!(swRegistration.active) + ' scope=' + swRegistration.scope);
-    }, 2000);
 });
 </script>
 </body>

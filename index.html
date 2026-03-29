@@ -854,9 +854,20 @@ function disableAllNotifications() {
 function forceReschedule() {
     if (Notification.permission !== 'granted') { dbg('Permission not granted'); return; }
     const settings = getNotificationSettings();
-    dbg('Force re-subscribe: shift=' + settings.shift);
+    dbg('Force re-subscribe: unsubscribing first...');
     if (!WORKER_URL) { dbg('ERROR: WORKER_URL not set'); return; }
-    subscribeToPush(settings.shift).then(ok => dbg(ok ? 'Re-subscribed OK' : 'Re-subscribe FAILED'));
+    if (!swRegistration) { dbg('No SW registration'); return; }
+
+    swRegistration.pushManager.getSubscription().then(sub => {
+        const unsub = sub ? sub.unsubscribe() : Promise.resolve(true);
+        return unsub;
+    }).then(() => {
+        dbg('Unsubscribed. Creating fresh subscription...');
+        return subscribeToPush(settings.shift);
+    }).then(ok => {
+        dbg(ok ? '✅ Fresh push subscription created!' : '❌ Re-subscribe FAILED');
+        updateNotificationStatus();
+    }).catch(err => dbg('Error: ' + err.message));
 }
 
 function setWorkerUrl() {

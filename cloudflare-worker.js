@@ -97,6 +97,49 @@ export default {
       });
     }
 
+    // GET /debug  - show current time, tasks, and subscriptions
+    if (request.method === 'GET' && url.pathname === '/debug') {
+      const now = new Date();
+      const osloTime = new Intl.DateTimeFormat('no-NO', {
+        timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit', hour12: false
+      }).format(now);
+      const [hh, mm] = osloTime.split(':');
+      const nowStr = `${hh.padStart(2,'0')}:${mm.padStart(2,'0')}`;
+
+      let tasks = [];
+      let taskError = null;
+      try { tasks = await fetchSheetTasks(env); } catch(e) { taskError = e.message; }
+
+      const subs = await loadAllSubscriptions(env);
+
+      const tasksByShift = {};
+      for (const [shiftKey, shift] of Object.entries(SHIFTS)) {
+        tasksByShift[shiftKey] = getTasksDueAt(tasks, shiftKey, shift, nowStr);
+      }
+
+      // Show all task times for each shift
+      const allTimes = {};
+      for (const [shiftKey] of Object.entries(SHIFTS)) {
+        allTimes[shiftKey] = tasks
+          .filter(t => t.enabled)
+          .map(t => shiftKey === 'day' ? t.dayTime : shiftKey === 'evening' ? t.eveningTime : t.nightTime)
+          .filter(Boolean);
+      }
+
+      return new Response(JSON.stringify({
+        osloTime: nowStr,
+        utcTime: now.toISOString(),
+        taskError,
+        totalTasks: tasks.length,
+        enabledTasks: tasks.filter(t => t.enabled).length,
+        dueNow: tasksByShift,
+        allTaskTimes: allTimes,
+        subscriptions: subs.map(s => ({ shift: s.shift, key: s.key }))
+      }, null, 2), {
+        headers: { ...cors, 'Content-Type': 'application/json' }
+      });
+    }
+
     return new Response('Service Sjekkliste Push Worker', { headers: cors });
   }
 };
@@ -105,11 +148,18 @@ export default {
 
 async function runNotificationCheck(env, forceAll = false) {
   const now = new Date();
-  const hh  = String(now.getUTCHours() + 2).padStart(2, '0');   // Oslo = UTC+2 (CEST). Change to +1 for CET (winter)
-  const mm  = String(now.getMinutes()).padStart(2, '0');
-  const nowStr = `${hh}:${mm}`;
+  // Use Intl to get correct Oslo time automatically (handles CET/CEST switchover)
+  const osloTime = new Intl.DateTimeFormat('no-NO', {
+    timeZone: 'Europe/Oslo',
+    hour:     '2-digit',
+    minute:   '2-digit',
+    hour12:   false
+  }).format(now);
+  // osloTime is "HH:MM" in 24h format
+  const [hh, mm] = osloTime.split(':');
+  const nowStr = `${hh.padStart(2,'0')}:${mm.padStart(2,'0')}`;
 
-  console.log('Cron check at', nowStr, '(Oslo time)');
+  console.log('Cron check at', nowStr, '(Oslo time), UTC was', now.toISOString());
 
   // Load tasks from Google Sheet
   let tasks;

@@ -242,7 +242,7 @@
                     <label for="hourlyReminders">Timebaserte oppgavepåminnelser</label>
                 </div>
                 <p style="margin-left: 39px; margin-top: 5px; font-size: 14px; color: #666;">
-                    Varsler 10 min før hver time med planlagte oppgaver
+                    Varsler på nøyaktig tidspunkt for hver planlagte oppgave
                 </p>
             </div>
 
@@ -269,7 +269,8 @@
             <div id="debugPanel" style="margin-top:15px; padding:12px; background:#1e1e1e; color:#00ff88; border-radius:8px; font-family:monospace; font-size:12px; display:none; max-height:200px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;"></div>
             <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button id="debugToggle" class="btn btn-secondary btn-small" onclick="toggleDebug()">🐛 Vis feilsøking</button>
-                <button class="btn btn-small" style="background:#764ba2;" onclick="forceReschedule()">↺ Tving ny planlegging</button>
+                <button class="btn btn-small" style="background:#764ba2;" onclick="setWorkerUrl()">🔗 Sett Worker URL</button>
+                <button class="btn btn-small" style="background:#764ba2;" onclick="forceReschedule()">↺ Re-abonner</button>
                 <button class="btn btn-small" style="background:#764ba2;" onclick="forceTestIn10s()">⏱ Testvarsel om 10 sek</button>
             </div>
 
@@ -705,26 +706,104 @@ function loadNotificationSettings() {
 }
 
 // Send the full task list + settings to the service worker for scheduling
+// ── Web Push subscription ────────────────────────────────────────────────
+// The Cloudflare Worker URL - update this after deploying your Worker
+let WORKER_URL = localStorage.getItem('worker_url') || '';
+
+async function getVapidPublicKey() {
+    if (!WORKER_URL) return null;
+    try {
+        const res = await fetch(WORKER_URL + '/vapid-public-key');
+        const { key } = await res.json();
+        return key;
+    } catch (e) {
+        dbg('Failed to fetch VAPID key: ' + e.message);
+        return null;
+    }
+}
+
+async function subscribeToPush(shift) {
+    if (!swRegistration) { dbg('No SW registration'); return false; }
+    const vapidKey = await getVapidPublicKey();
+    if (!vapidKey) { dbg('No VAPID key - is WORKER_URL set?'); return false; }
+
+    try {
+        // Convert VAPID public key to Uint8Array
+        const keyBuffer = urlBase64ToUint8Array(vapidKey);
+
+        const subscription = await swRegistration.pushManager.subscribe({
+            userVisibleOnly:      true,
+            applicationServerKey: keyBuffer
+        });
+
+        dbg('Push subscription created, sending to worker...');
+
+        const res = await fetch(WORKER_URL + '/subscribe', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ subscription: subscription.toJSON(), shift })
+        });
+
+        if (!res.ok) throw new Error('Worker returned ' + res.status);
+        const data = await res.json();
+        dbg('Subscribed OK, key: ' + data.key);
+        localStorage.setItem('push_subscribed', 'true');
+        localStorage.setItem('push_shift', shift);
+        return true;
+    } catch (e) {
+        dbg('Subscribe failed: ' + e.message);
+        return false;
+    }
+}
+
+async function unsubscribeFromPush() {
+    if (!swRegistration) return;
+    try {
+        const sub = await swRegistration.pushManager.getSubscription();
+        if (sub) {
+            await fetch(WORKER_URL + '/subscribe', {
+                method:  'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ endpoint: sub.endpoint })
+            });
+            await sub.unsubscribe();
+            localStorage.removeItem('push_subscribed');
+            dbg('Unsubscribed from push');
+        }
+    } catch (e) {
+        dbg('Unsubscribe error: ' + e.message);
+    }
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const raw     = atob(base64);
+    return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+async function checkPushSubscription() {
+    if (!swRegistration) return;
+    const sub = await swRegistration.pushManager.getSubscription();
+    const savedShift = localStorage.getItem('push_shift');
+    const settings   = getNotificationSettings();
+
+    if (sub && savedShift !== settings.shift && settings.shift) {
+        // Shift changed - re-subscribe with new shift
+        dbg('Shift changed, re-subscribing...');
+        await subscribeToPush(settings.shift);
+    }
+}
+
+// No-op - scheduling is done server-side
+function startNotificationInterval() {}
+function stopNotificationInterval() {}
+
 function pushScheduleToServiceWorker(settings) {
-    if (!('serviceWorker' in navigator)) return;
-    if (Notification.permission !== 'granted') return;
-
-    const doSend = (sw) => {
-        sw.postMessage({
-            type: 'SCHEDULE_NOTIFICATIONS',
-            settings,
-            tasks: checklistData,
-            shifts: SHIFTS
-        });
-    };
-
-    if (swRegistration && swRegistration.active) {
-        doSend(swRegistration.active);
-    } else {
-        navigator.serviceWorker.ready.then(reg => {
-            swRegistration = reg;
-            if (reg.active) doSend(reg.active);
-        });
+    // With Web Push, we just ensure the subscription is up to date
+    if (Notification.permission === 'granted' && settings.shift &&
+        (settings.shiftStartReminder || settings.hourlyReminders)) {
+        checkPushSubscription();
     }
 }
 
@@ -742,14 +821,22 @@ function onPermissionResult(perm) {
     if (perm === 'granted') {
         updateNotificationStatus();
         const settings = getNotificationSettings();
-        pushScheduleToServiceWorker(settings);
         generateChecklist();
         loadState();
+        // Subscribe to Web Push if worker URL is configured
+        if (WORKER_URL && settings.shift) {
+            dbg('Permission granted - subscribing to push...');
+            subscribeToPush(settings.shift).then(ok => {
+                if (ok) updateNotificationStatus();
+                else showWarning('Varsel-abonnement feilet. Sjekk at Worker URL er satt riktig.');
+            });
+        } else if (!WORKER_URL) {
+            showWarning('Worker URL er ikke satt. Åpne feilsøkingspanelet og trykk "Sett Worker URL".');
+        }
     } else if (perm === 'denied') {
         showWarning('Varsler er blokkert. Gå til nettleserinnstillinger → Varsler for å aktivere.');
         updateNotificationStatus();
     } else {
-        // 'default' means dialog was dismissed without choosing
         showWarning('Du må trykke "Tillat" i dialogboksen for å aktivere varsler.');
         updateNotificationStatus();
     }
@@ -760,40 +847,42 @@ function disableAllNotifications() {
     document.getElementById('shiftStartReminder').checked = false;
     document.getElementById('hourlyReminders').checked    = false;
     saveNotificationSettings();
-    // Tell SW to clear all scheduled timeouts
-    if (swRegistration && swRegistration.active) {
-        swRegistration.active.postMessage({ type: 'CLEAR_NOTIFICATIONS' });
-    }
+    stopNotificationInterval();
     alert('✓ Alle varsler er skrudd av');
 }
 
 function forceReschedule() {
     if (Notification.permission !== 'granted') { dbg('Permission not granted'); return; }
-    navigator.serviceWorker.ready.then(reg => {
-        swRegistration = reg;
-        const settings = getNotificationSettings();
-        dbg('Force reschedule: shift=' + settings.shift + ' hourly=' + settings.hourlyReminders + ' tasks=' + checklistData.length);
-        pushScheduleToServiceWorker(settings);
-        dbg('Message sent to SW');
-    });
+    const settings = getNotificationSettings();
+    dbg('Force re-subscribe: shift=' + settings.shift);
+    if (!WORKER_URL) { dbg('ERROR: WORKER_URL not set'); return; }
+    subscribeToPush(settings.shift).then(ok => dbg(ok ? 'Re-subscribed OK' : 'Re-subscribe FAILED'));
+}
+
+function setWorkerUrl() {
+    const url = prompt('Lim inn Cloudflare Worker URL (f.eks. https://xxx.workers.dev):');
+    if (url && url.startsWith('https://')) {
+        WORKER_URL = url.replace(/\/$/, '');
+        localStorage.setItem('worker_url', WORKER_URL);
+        dbg('Worker URL satt til: ' + WORKER_URL);
+    } else {
+        dbg('Ugyldig URL - må starte med https://');
+    }
 }
 
 function forceTestIn10s() {
     if (!swRegistration) { dbg('No SW registration'); return; }
-    dbg('Scheduling test notification via SW in 10 seconds...');
-    // We schedule it via a fake task message with a slot 10 seconds from now
-    const now = new Date();
-    now.setSeconds(now.getSeconds() + 20); // 20s from now = notify 10s before a "task" at +20s
-    const fakeTime = now.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-    if (swRegistration.active) {
-        swRegistration.active.postMessage({
-            type: 'SCHEDULE_NOTIFICATIONS',
-            settings: { ...getNotificationSettings(), hourlyReminders: true },
-            tasks: [{ enabled: true, category: 'Test', task: 'Dette er et testvarsel', dayTime: fakeTime, eveningTime: fakeTime, nightTime: fakeTime, interval: null }],
-            shifts: SHIFTS
-        });
-        dbg('Sent fake task at ' + fakeTime + ' - you should get a notification shortly');
-    }
+    dbg('Scheduling test notification in 10 seconds via page timeout...');
+    setTimeout(() => {
+        dbg('10s elapsed - firing notification now');
+        swRegistration.showNotification('⏱ Tidsbasert testvarsel', {
+            body: 'Denne ble trigget av page-side setTimeout etter 10 sekunder',
+            icon: './icons/icon-192x192.png',
+            tag: 'timed-test',
+            requireInteraction: true
+        }).then(() => dbg('Timed test notification fired OK'))
+          .catch(err => dbg('ERROR: ' + err.message));
+    }, 10000);
 }
 
 function sendTestNotification() {
@@ -896,8 +985,18 @@ function updateNotificationStatus() {
     if (settings.hourlyReminders)    parts.push('timebaserte oppgaver');
     statusText.textContent = `✅ Påminnelser aktive for ${shiftName}-skift: ${parts.join(', ')}`;
     statusText.style.color = '#1976D2';
-    nextText.textContent   = 'Varsler sendes av service worker – fungerer selv med låst skjerm.';
-    nextText.style.color   = '#1976D2';
+    const pushSub = localStorage.getItem('push_subscribed');
+    const workerSet = !!WORKER_URL;
+    if (!workerSet) {
+        nextText.textContent = '⚠️ Worker URL ikke satt – åpne feilsøkingspanel og trykk "Sett Worker URL"';
+        nextText.style.color = '#856404';
+    } else if (!pushSub) {
+        nextText.textContent = '⚠️ Ikke abonnert på push ennå – trykk "Aktiver påminnelser" på nytt';
+        nextText.style.color = '#856404';
+    } else {
+        nextText.textContent = '✅ Push-abonnement aktivt – varsler leveres selv med låst skjerm';
+        nextText.style.color = '#1976D2';
+    }
 }
 
 function renderWarning(div, type, html) {

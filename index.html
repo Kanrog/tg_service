@@ -865,6 +865,24 @@ function setWorkerUrl() {
         WORKER_URL = url.replace(/\/$/, '');
         localStorage.setItem('worker_url', WORKER_URL);
         dbg('Worker URL satt til: ' + WORKER_URL);
+
+        // If permission already granted, subscribe immediately
+        if (Notification.permission === 'granted') {
+            const settings = getNotificationSettings();
+            if (settings.shift) {
+                dbg('Permission already granted - subscribing now...');
+                subscribeToPush(settings.shift).then(ok => {
+                    dbg(ok ? '✅ Push-abonnement aktivert!' : '❌ Abonnement feilet - sjekk debug');
+                    updateNotificationStatus();
+                });
+            } else {
+                dbg('URL satt - velg skift og aktiver påminnelser for å abonnere');
+                updateNotificationStatus();
+            }
+        } else {
+            dbg('URL satt - trykk "Aktiver påminnelser" for å fortsette');
+            updateNotificationStatus();
+        }
     } else {
         dbg('Ugyldig URL - må starte med https://');
     }
